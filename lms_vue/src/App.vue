@@ -15,13 +15,6 @@ export default {
     Nav,
     Footer,
   },
-  methods: {
-    authInit() {
-
-    }
-
-  },
-
   beforeCreate() {
     console.log('Инициализация')
     this.$store.commit('initializeStore')
@@ -31,12 +24,6 @@ export default {
     } else {
       axios.defaults.headers.common['Authorization'] = ''
     }
-    //   console.log(this.$store.state.user.isAuthenticated)
-    //   if (!this.$store.state.user.isAuthenticated) {
-
-    //   this.$router.push('/log-in')
-    // }
-    
   }
 }
 </script>

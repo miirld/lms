@@ -1,6 +1,6 @@
 $gold: #e7cf6e;
 $custom-family-sans-serif: "Arial", "Tahoma", sans-serif;
 @use "bulma/sass" with (
-	$yellow: $gold,
+	$warning: $gold,
 	$family-sans-serif: $custom-family-sans-serif
 );

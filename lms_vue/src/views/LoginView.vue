@@ -5,7 +5,7 @@
                 <h1 class="title">Авторизация</h1>
             </div>
         </div>
-        <section class="section" >
+        <section class="section">
             <div class="container">
                 <div class="columns">
                     <div class="column is-4 is-offset-4">
@@ -48,6 +48,10 @@
     </div>
 </template>
 
+
+
+
+
 <script>
 import axios from 'axios'
 export default {
@@ -58,6 +62,11 @@ export default {
             errors: [],
         }
     },
+    mounted() {
+        document.title = 'Авторизация | Роснефть класс'
+
+    },
+
     methods: {
         submitForm() {
             console.log('Подтверждение формы')

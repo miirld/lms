@@ -17,6 +17,10 @@
 import axios from 'axios'
 
 export default {
+    name: 'MyAccountView',
+    mounted(){
+        document.title = 'Личный кабинет | Роснефть класс'
+    },
 
     methods: {
         async logout() {
