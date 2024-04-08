@@ -1,6 +1,6 @@
 <template>
     <div class="about">
-        <div class="hero is-warning">
+        <div class="hero is-primary">
             <div class="hero-body has-text-centered">
                 <h1 class="title">Личный кабинет</h1>
             </div>
@@ -18,7 +18,7 @@ import axios from 'axios'
 
 export default {
     name: 'MyAccountView',
-    mounted(){
+    mounted() {
         document.title = 'Личный кабинет | Роснефть класс'
     },
 

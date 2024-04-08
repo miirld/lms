@@ -1,6 +1,6 @@
 <template>
     <div class="login">
-        <div class="hero is-warning">
+        <div class="hero is-primary">
             <div class="hero-body has-text-centered">
                 <h1 class="title">Авторизация</h1>
             </div>

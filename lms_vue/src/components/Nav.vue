@@ -1,6 +1,6 @@
 <template>
 
-    <nav class="navbar is-warning" role="navigation" aria-label="main navigation" style="min-height: 5rem;">
+    <nav class="navbar is-primary" role="navigation" aria-label="main navigation" style="min-height: 5rem;">
         <div class="navbar-brand">
             <router-link to="/" class="navbar-item"><img src="../assets/logo.svg" alt="Лого" width="50px"
                     style="max-height:80% ;"></router-link>
@@ -15,18 +15,13 @@
 
             <div class="navbar-end">
                 <div class="navbar-item">
-                    <template v-if="$store.state.user.isAuthenticated">
-                        <div class="buttons">
-                            <router-link to="/my-account" class="button is-warning has-text-weight-semibold">Личный
-                                кабинет</router-link>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <div class="buttons">
-                            <router-link to="/log-in"
-                                class="button is-warning has-text-weight-semibold">Авторизация</router-link>
-                        </div>
-                    </template>
+
+                    <div class="buttons">
+                        <router-link to="/my-account" class="button is-primary has-text-weight-semibold">Личный
+                            кабинет</router-link>
+                    </div>
+
+
                 </div>
             </div>
         </div>
