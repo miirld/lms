@@ -6,8 +6,8 @@ from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 
 fields = list(UserAdmin.fieldsets)
-fields[1] = ('Personal Info', {'fields':
-             ('first_name', 'last_name', 'patronymic', 'email')})
+fields[1] = ('Личная информация', {'fields':
+             ('first_name', 'last_name', 'patronymic', 'email','avatar')})
 
 
 UserAdmin.fieldsets = tuple(fields)

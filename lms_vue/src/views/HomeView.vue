@@ -37,98 +37,30 @@
                     <div class="column is-7">
 
 
-                        <article class="media">
+                        <article class="media" v-for="article in news" :key="article.id">
                             <div class="media-left">
                                 <figure class="image is-48x48">
-                                    <img class="is-rounded" src="https://placehold.co/48x48" />
+                                    <img class="is-rounded" :src="article.created_by.get_image" />
                                 </figure>
                             </div>
                             <div class="media-content">
                                 <div class="content">
                                     <p>
-                                        <strong>Рудаков Михаил Дмитриевич</strong>
+                                        <strong>{{ article.created_by.first_name }} {{ article.created_by.last_name }} {{ article.created_by.patronymic }}</strong>
                                         <br />
-                                        <small>18 марта 2024 18:45</small>
+                                        <small>{{ article.created_at }}</small>
                                     </p>
                                     <p>
-                                        Банальные, но неопровержимые выводы, а также независимые государства, вне
-                                        зависимости от их уровня,
-                                        должны быть подвергнуты целой серии независимых исследований. Есть над чем
-                                        задуматься: интерактивные
-                                        прототипы набирают популярность среди определенных слоев населения, а значит,
-                                        должны быть в равной
-                                        степени предоставлены сами себе. Господа, начало повседневной работы по
-                                        формированию позиции
-                                        позволяет оценить значение направлений прогрессивного развития.
+                                        {{ article.short_description }}
                                     </p>
                                 </div>
                                 <figure class="image">
-                                    <img src="https://placehold.co/4000x2000">
+                                    <img :src="article.get_image">
                                 </figure>
                             </div>
                         </article>
 
-                        <article class="media">
-                            <div class="media-left">
-                                <figure class="image is-48x48">
-                                    <img class="is-rounded" src="https://placehold.co/48x48" />
-                                </figure>
-                            </div>
-                            <div class="media-content">
-                                <div class="content">
-                                    <p>
-                                        <strong>Рудаков Михаил Дмитриевич</strong>
-                                        <br />
-                                        <small>18 марта 2024 18:45</small>
-                                    </p>
-                                    <p>
-                                        Банальные, но неопровержимые выводы, а также независимые государства, вне
-                                        зависимости от их уровня,
-                                        должны быть подвергнуты целой серии независимых исследований. Есть над чем
-                                        задуматься: интерактивные
-                                        прототипы набирают популярность среди определенных слоев населения, а значит,
-                                        должны быть в равной
-                                        степени предоставлены сами себе. Господа, начало повседневной работы по
-                                        формированию позиции
-                                        позволяет оценить значение направлений прогрессивного развития.
-                                    </p>
-                                </div>
-                                <figure class="image">
-                                    <img src="https://placehold.co/4000x2000">
-                                </figure>
-                            </div>
-                        </article>
 
-                        <article class="media">
-                            <div class="media-left">
-                                <figure class="image is-48x48">
-                                    <img class="is-rounded" src="https://placehold.co/48x48" />
-                                </figure>
-                            </div>
-                            <div class="media-content">
-                                <div class="content">
-                                    <p>
-                                        <strong>Рудаков Михаил Дмитриевич</strong>
-                                        <br />
-                                        <small>18 марта 2024 18:45</small>
-                                    </p>
-                                    <p>
-                                        Банальные, но неопровержимые выводы, а также независимые государства, вне
-                                        зависимости от их уровня,
-                                        должны быть подвергнуты целой серии независимых исследований. Есть над чем
-                                        задуматься: интерактивные
-                                        прототипы набирают популярность среди определенных слоев населения, а значит,
-                                        должны быть в равной
-                                        степени предоставлены сами себе. Господа, начало повседневной работы по
-                                        формированию позиции
-                                        позволяет оценить значение направлений прогрессивного развития.
-                                    </p>
-                                </div>
-                                <figure class="image">
-                                    <img src="https://placehold.co/4000x2000">
-                                </figure>
-                            </div>
-                        </article>
 
 
                     </div>
@@ -164,17 +96,26 @@ img {
 
 
 <script>
-
+import axios from 'axios'
 
 export default {
+
     name: 'HomeView',
     data() {
         return {
+            news: [],
             dates: []
         }
     },
     mounted() {
         document.title = 'Главная страница | Роснефть класс'
+
+        axios
+            .get('/news/')
+            .then(response => {
+                console.log(response.data)
+                this.news = response.data
+            })
     }
 }
 </script>
