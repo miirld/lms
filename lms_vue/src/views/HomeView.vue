@@ -46,7 +46,8 @@
                             <div class="media-content">
                                 <div class="content">
                                     <p>
-                                        <strong>{{ article.created_by.first_name }} {{ article.created_by.last_name }} {{ article.created_by.patronymic }}</strong>
+                                        <strong>{{ article.created_by.first_name }} {{ article.created_by.last_name }}
+                                            {{ article.created_by.patronymic }}</strong>
                                         <br />
                                         <small>{{ article.created_at }}</small>
                                     </p>
@@ -59,6 +60,9 @@
                                 </figure>
                             </div>
                         </article>
+
+
+                        <Trigger v-if="hasNext" @triggerIntersected="loadMore" />
 
 
 
@@ -97,25 +101,62 @@ img {
 
 <script>
 import axios from 'axios'
+import Trigger from '@/components/Trigger'
 
 export default {
 
     name: 'HomeView',
     data() {
         return {
+            dates: [],
             news: [],
-            dates: []
+            currentPage: 1,
+            hasNext: false,
+
         }
     },
-    mounted() {
+    components: {
+        Trigger,
+    },
+    async beforeMount() {
         document.title = 'Главная страница | Роснефть класс'
-
-        axios
-            .get('/news/')
+        await axios
+            .get('/news/?page=1')
             .then(response => {
-                console.log(response.data)
-                this.news = response.data
+                this.news = response.data.results
+                if (response.data.next) {
+                    this.hasNext = true
+                }
+
             })
+            .catch(error => {
+                console.log(error)
+            })
+
+
+
+
+    },
+    methods: {
+        async loadMore() {
+            console.log('loadMore')
+            this.currentPage += 1;
+
+            await axios
+                .get(`/news/?page=${this.currentPage}`)
+                .then(response => {
+                    this.news = [...this.news, ...response.data.results]
+                    this.hasNext = false
+                    if (response.data.next) {
+                        this.hasNext = true
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+
+        }
+
     }
 }
 </script>
