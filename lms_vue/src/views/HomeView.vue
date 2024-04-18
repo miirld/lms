@@ -11,62 +11,38 @@
                                 <li>
                                     <a>
                                         <label class="checkbox ">
-                                            <input type="checkbox" />
-                                            Новости
+                                            <input type="checkbox" value="article" v-model="types" />
+                                            Статьи
                                         </label>
                                     </a>
                                 </li>
                                 <li>
                                     <a>
                                         <label class="checkbox">
-                                            <input type="checkbox" />
+                                            <input type="checkbox" value="message" v-model="types" />
                                             Сообщения
                                         </label>
                                     </a>
                                 </li>
                             </ul>
-
                             <p class="menu-label"><b>Дата</b></p>
-                            <b-datepicker placeholder="Выберите дату" class="mb-3" range>
+                            <b-datepicker placeholder="Выберите дату" v-model="dates" class="mb-3" range>
                             </b-datepicker>
-                            <button class="button is-primary is-fullwidth">Применить</button>
+                            <button class="button is-primary is-fullwidth" @click="load">Применить</button>
                         </aside>
 
                     </div>
 
                     <div class="column is-7">
-
-
-                        <article class="media" v-for="article in news" :key="article.id">
-                            <div class="media-left">
-                                <figure class="image is-48x48">
-                                    <img class="is-rounded" :src="article.created_by.get_image" />
-                                </figure>
-                            </div>
-                            <div class="media-content">
-                                <div class="content">
-                                    <p>
-                                        <strong>{{ article.created_by.first_name }} {{ article.created_by.last_name }}
-                                            {{ article.created_by.patronymic }}</strong>
-                                        <br />
-                                        <small>{{ article.created_at }}</small>
-                                    </p>
-                                    <p>
-                                        {{ article.short_description }}
-                                    </p>
-                                </div>
-                                <figure class="image">
-                                    <img :src="article.get_image">
-                                </figure>
-                            </div>
-                        </article>
-
-
-                        <Trigger v-if="hasNext" @triggerIntersected="loadMore" />
-
-
-
-
+                        <template v-if="news.length !== 0">
+                            <template v-for="article in news" :key="article.id">
+                                <ArticleItem :article="article" />
+                            </template>
+                            <Trigger v-if="hasNext" @triggerIntersected="loadMore" />
+                        </template>
+                        <template v-else>
+                            <h3 class="subtitle is-3 has-text-grey" style="height:75vh;">Новостей нет</h3>
+                        </template>
                     </div>
 
                 </div>
@@ -102,48 +78,56 @@ img {
 <script>
 import axios from 'axios'
 import Trigger from '@/components/Trigger'
+import ArticleItem from '@/components/ArticleItem'
 
 export default {
-
     name: 'HomeView',
+
     data() {
         return {
-            dates: [],
             news: [],
+            dates: [],
+            types: [],
             currentPage: 1,
-            hasNext: false,
+            hasNext: false
 
         }
     },
+
+    computed: {
+        typeDates() {
+            if (this.dates.length !== 0) {
+                let from = new Date(this.dates[0]).valueOf();
+                let to = new Date(this.dates[1]).valueOf();
+                return [from, to]
+            }
+            return []
+        }
+    },
+
     components: {
         Trigger,
+        ArticleItem
     },
-    async beforeMount() {
+
+    mounted() {
         document.title = 'Главная страница | Роснефть класс'
-        await axios
-            .get('/news/?page=1')
-            .then(response => {
-                this.news = response.data.results
-                if (response.data.next) {
-                    this.hasNext = true
-                }
-
-            })
-            .catch(error => {
-                console.log(error)
-            })
-
-
-
-
+        this.load()
     },
+
     methods: {
-        async loadMore() {
+        loadMore() {
             console.log('loadMore')
             this.currentPage += 1;
 
-            await axios
-                .get(`/news/?page=${this.currentPage}`)
+            axios
+                .get('/news/', {
+                    params: {
+                        page: this.currentPage,
+                        types: this.types,
+                        dates: this.typeDates
+                    }
+                })
                 .then(response => {
                     this.news = [...this.news, ...response.data.results]
                     this.hasNext = false
@@ -155,6 +139,30 @@ export default {
                     console.log(error)
                 })
 
+        },
+        load() {
+            console.log('doFilter')
+            this.hasNext = false
+            this.news = []
+            this.currentPage = 1
+
+            axios
+                .get('/news/', {
+                    params: {
+                        page: 1,
+                        types: this.types,
+                        dates: this.typeDates
+                    }
+                })
+                .then(response => {
+                    this.news = response.data.results
+                    if (response.data.next) {
+                        this.hasNext = true
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
         }
 
     }
