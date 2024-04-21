@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'djoser',
     'users.apps.UsersConfig',
     'news.apps.NewsConfig',
+    'study_groups.apps.StudyGroupsConfig',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.conf import settings
+from study_groups.models import StudyGroup 
 
 
 
@@ -25,8 +26,10 @@ class News (models.Model):
 
     created_by = models.ForeignKey(
         get_user_model(), related_name='news', on_delete=models.CASCADE, verbose_name='Автор')
-    created_for = models.ManyToManyField(
-        Group, related_name='allowed_news', verbose_name='Новость для')
+    created_for_groups = models.ManyToManyField(
+        Group, related_name='allowed_news', verbose_name='Новость для группы', blank=True)
+    created_for_studygroups = models.ManyToManyField(
+        StudyGroup, related_name='allowed_news', verbose_name='Новость для класса', blank=True)
     title = models.CharField(max_length=255, verbose_name='Заголовок')
     short_description = models.TextField(verbose_name='Короткое описание')
     long_description = models.TextField(verbose_name='Длинное описание')

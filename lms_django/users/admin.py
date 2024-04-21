@@ -7,7 +7,7 @@ from .models import CustomUser
 
 fields = list(UserAdmin.fieldsets)
 fields[1] = ('Личная информация', {'fields':
-             ('first_name', 'last_name', 'patronymic', 'email','avatar')})
+             ('first_name', 'last_name', 'patronymic', 'email','avatar', 'studygroups')})
 
 
 UserAdmin.fieldsets = tuple(fields)
