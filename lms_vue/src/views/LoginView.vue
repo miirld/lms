@@ -110,7 +110,7 @@ export default {
                             }
                             console.log(JSON.stringify(error.response.data))
                         } else if (error.message) {
-                            this.errors.push('Что-то пошло не так. Пожалуйста, повторите запрос')
+                            this.errors.push(JSON.stringify(error))
                             console.log(JSON.stringify(error))
                         }
                     })

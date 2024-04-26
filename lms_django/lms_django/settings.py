@@ -30,9 +30,10 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.105', '127.0.0.1', 'localhost']
 
-WEBSITE_URL = 'http://127.0.0.1:8000'
+# WEBSITE_URL = 'http://127.0.0.1:8000'
+WEBSITE_URL = 'http://192.168.0.105:8000'
 
 
 # Application definition
@@ -51,12 +52,14 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'news.apps.NewsConfig',
     'study_groups.apps.StudyGroupsConfig',
+    'courses.apps.CoursesConfig'
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8081",
+    "http://192.168.0.105:8081",
 ]
 
 MIDDLEWARE = [

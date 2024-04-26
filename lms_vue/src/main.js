@@ -9,6 +9,7 @@ import TextClamp from 'vue3-text-clamp';
 
 
 
-axios.defaults.baseURL = "http://127.0.0.1:8000/api/v1";
+// axios.defaults.baseURL = "http://127.0.0.1:8000/api/v1";
+axios.defaults.baseURL = "http://192.168.0.105:8000/api/v1";
 
 createApp(App).use(store).use(router, axios).use(Datepicker).use(Navbar).use(Icon).use(TextClamp).mount('#app')

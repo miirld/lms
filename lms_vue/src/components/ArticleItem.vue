@@ -21,7 +21,7 @@
 
                 </div>
 
-                <text-clamp :text="article.content" :max-lines="6" auto-resize style="white-space: pre-wrap;">
+                <text-clamp :text="article.content" :max-lines="15" auto-resize style="white-space: pre-wrap;">
                     <template #after="{ toggle, expanded, clamped }">
                         <br>
                         <a v-if="expanded || clamped" @click="toggle">
@@ -32,7 +32,7 @@
                 </text-clamp>
 
             </div>
-            <figure class="image">
+            <figure v-if="article.get_image" class="image">
                 <img :src="article.get_image">
             </figure>
         </div>

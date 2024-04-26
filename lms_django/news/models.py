@@ -52,7 +52,7 @@ class News (models.Model):
         if self.image:
             return settings.WEBSITE_URL + self.image.url
         else:
-            return "https://placehold.co/4000x2000"
+            return None
 
     class Meta:
         verbose_name = 'Новость'
