@@ -34,15 +34,17 @@
                     </div>
 
                     <div class="column is-7">
-                        <template v-if="news.length !== 0">
-                            <template v-for="article in news" :key="article.id">
-                                <ArticleItem :article="article" />
+                        <div class="mx-2">
+                            <template v-if="news.length !== 0">
+                                <template v-for="article in news" :key="article.id">
+                                    <ArticleItem :article="article" />
+                                </template>
+                                <Trigger v-if="hasNext" @triggerIntersected="loadMore" />
                             </template>
-                            <Trigger v-if="hasNext" @triggerIntersected="loadMore" />
-                        </template>
-                        <template v-else>
-                            <h3 class="subtitle is-3 has-text-grey" style="height:75vh;">Новостей нет</h3>
-                        </template>
+                            <template v-else>
+                                <h3 class="subtitle is-3 has-text-grey" style="height:75vh;">Новостей нет</h3>
+                            </template>
+                        </div>
                     </div>
 
                 </div>

@@ -2,9 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.conf import settings
-from study_groups.models import StudyGroup 
-
-
+from study_groups.models import StudyGroup
 
 
 class News (models.Model):
@@ -30,9 +28,7 @@ class News (models.Model):
         Group, related_name='allowed_news', verbose_name='Новость для группы', blank=True)
     created_for_studygroups = models.ManyToManyField(
         StudyGroup, related_name='allowed_news', verbose_name='Новость для класса', blank=True)
-    title = models.CharField(max_length=255, verbose_name='Заголовок')
-    short_description = models.TextField(verbose_name='Короткое описание')
-    long_description = models.TextField(verbose_name='Длинное описание')
+    content = models.TextField(verbose_name='Текст')
     created_at = models.DateTimeField(verbose_name='Дата и время создания')
     status = models.CharField(
         max_length=25, choices=STATUS_CHOICES, default=DRAFT, verbose_name='Статус')
@@ -41,8 +37,16 @@ class News (models.Model):
     image = models.ImageField(
         upload_to='news', blank=True, null=True, verbose_name='Изображение')
 
+
+    @property
+    def clamped_content(self):
+        return self.content[0:100] + '...'
+    
+    clamped_content.fget.short_description = 'Текст'
+    
+
     def __str__(self):
-        return self.title
+        return self.clamped_content
 
     def get_image(self):
         if self.image:

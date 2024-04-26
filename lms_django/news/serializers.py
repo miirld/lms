@@ -15,4 +15,4 @@ class NewsListSerializer(serializers.ModelSerializer):
     created_by = MediaUserSerializer(many=False)
     class Meta:
         model = News
-        fields = ('id', 'short_description', 'created_at', 'get_image', 'created_by')
+        fields = ('id', 'content', 'created_at', 'get_image', 'created_by')

@@ -70,12 +70,14 @@ $link-focus-border: $primary;
 </style>
 
 
+
+
 <script>
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import axios from 'axios'
-
 import AltNav from '@/components/AltNav.vue';
+
 
 export default {
   name: 'App',
