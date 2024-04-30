@@ -28,7 +28,7 @@ export default {
 
 
             await axios
-                .post('/token/logout/')
+                .post('/auth/logout/')
                 .then(response => {
                     console.log('Logged out')
                 })
@@ -40,6 +40,7 @@ export default {
             this.$store.commit('removeToken')
 
             this.$router.push('/log-in')
+            console.log('Выполнено')
 
 
         }

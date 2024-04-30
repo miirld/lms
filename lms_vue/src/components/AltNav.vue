@@ -37,7 +37,7 @@ export default {
 
 
             await axios
-                .post('/token/logout/')
+                .post('/auth/logout/')
                 .then(response => {
                     console.log('Logged out')
                 })

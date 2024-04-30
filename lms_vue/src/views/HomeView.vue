@@ -37,7 +37,7 @@
                         <div class="mx-2">
                             <template v-if="news.length !== 0">
                                 <template v-for="article in news" :key="article.id">
-                                    <ArticleItem :article="article" />
+                                    <ArticleItem class="" :article="article" />
                                 </template>
                                 <Trigger v-if="hasNext" @triggerIntersected="loadMore" />
                             </template>

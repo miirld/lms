@@ -1,7 +1,7 @@
 <template>
     <article class="media">
 
-        <div class="media-content">
+        <div class="media-content is-clipped">
             <div class="content">
                 <div class="columns is-mobile">
                     <div class="column is-narrow pr-0">

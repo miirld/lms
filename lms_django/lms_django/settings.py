@@ -15,6 +15,9 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
+from datetime import timedelta
+from rest_framework.settings import api_settings
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,10 +33,10 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.105', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['192.168.0.13', '127.0.0.1', 'localhost']
 
 # WEBSITE_URL = 'http://127.0.0.1:8000'
-WEBSITE_URL = 'http://192.168.0.105:8000'
+WEBSITE_URL = 'http://192.168.0.13:8000'
 
 
 # Application definition
@@ -46,9 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken',
+    'knox',
     'corsheaders',
-    'djoser',
     'users.apps.UsersConfig',
     'news.apps.NewsConfig',
     'study_groups.apps.StudyGroupsConfig',
@@ -59,7 +61,8 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8081",
-    "http://192.168.0.105:8081",
+    "http://192.168.0.13:8081",
+   
 ]
 
 MIDDLEWARE = [
@@ -154,6 +157,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DATETIME_FORMAT': '%d.%m.%Y %H:%M',
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        'knox.auth.TokenAuthentication',
     ),
+}
+
+
+REST_KNOX = {
+    'SECURE_HASH_ALGORITHM':'cryptography.hazmat.primitives.hashes.SHA512',
+    'AUTH_TOKEN_CHARACTER_LENGTH': 64, # By default, it is set to 64 characters (this shouldn't need changing).
+    'TOKEN_TTL': timedelta(hours=10), # The default is 10 hours i.e., timedelta(hours=10)).
+    'USER_SERIALIZER': 'knox.serializers.UserSerializer',
+    'TOKEN_LIMIT_PER_USER': None, # By default, this option is disabled and set to None -- thus no limit.
+    'AUTO_REFRESH': False, # This defines if the token expiry time is extended by TOKEN_TTL each time the token is used.
+    'EXPIRY_DATETIME_FORMAT': api_settings.DATETIME_FORMAT,
 }

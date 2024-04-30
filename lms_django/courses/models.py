@@ -28,6 +28,8 @@ class Course(models.Model):
     title = models.CharField(max_length=255, verbose_name='Название')
     categories = models.ManyToManyField(
         Category, related_name='courses', verbose_name='Категории')
+    preview_description = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name='Описание для превью')
     description = models.TextField(
         blank=True, null=True, verbose_name='Описание')
     created_at = models.DateField(
@@ -44,8 +46,9 @@ class Course(models.Model):
         if self.image:
             return settings.WEBSITE_URL + self.image.url
         else:
-            return "https://placehold.co/4000x2000"
+            return "https://placehold.co/600x400"
 
     class Meta:
         verbose_name = 'Курс'
         verbose_name_plural = 'Курсы'
+

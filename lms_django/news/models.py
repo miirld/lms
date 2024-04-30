@@ -40,7 +40,11 @@ class News (models.Model):
 
     @property
     def clamped_content(self):
-        return self.content[0:100] + '...'
+        if len(self.content)>100:
+            return self.content[0:100] + '...'
+        else:
+            return self.content
+
     
     clamped_content.fget.short_description = 'Текст'
     
