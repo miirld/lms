@@ -1,21 +1,21 @@
 <template>
     <b-navbar class="is-primary has-text-weight-semibold">
         <template #brand>
-            <router-link to="/" class="navbar-item"><img src="../assets/logo.svg" alt="Лого" width="50px"
+            <router-link :to="{ name: 'Home'}" class="navbar-item"><img src="../assets/logo.svg" alt="Лого" width="50px"
                     style="max-height:80% ;"></router-link>
         </template>
         <template #start>
-            <b-navbar-item tag="router-link" :to="{ path: '/' }">
+            <b-navbar-item tag="router-link" :to="{ name: 'Home'}">
                 Главная
             </b-navbar-item>
-            <b-navbar-item tag="router-link" :to="{ path: 'courses' }">
+            <b-navbar-item tag="router-link" :to="{ name: 'Courses'}">
                 Курсы
             </b-navbar-item>
         </template>
 
         <template #end>
             <b-navbar-dropdown label="Личный кабинет">
-                <b-navbar-item tag="router-link" :to="{ path: 'my-account' }">
+                <b-navbar-item tag="router-link" :to="{ name: 'MyAccount'}">
                     Личный кабинет
                 </b-navbar-item>
                 <b-navbar-item @click="logout">

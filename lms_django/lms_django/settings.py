@@ -33,10 +33,10 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.13', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['192.168.68.55', '127.0.0.1', 'localhost']
 
 # WEBSITE_URL = 'http://127.0.0.1:8000'
-WEBSITE_URL = 'http://192.168.0.13:8000'
+WEBSITE_URL = 'http://192.168.68.55:8000'
 
 
 # Application definition
@@ -61,7 +61,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8081",
-    "http://192.168.0.13:8081",
+    "http://192.168.68.55:8081",
    
 ]
 

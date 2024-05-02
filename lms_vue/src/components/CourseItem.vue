@@ -23,7 +23,9 @@
         </div>
 
         <footer class="card-footer">
-            <a href="#" class="card-footer-item">Продолжить</a>
+            <router-link class="card-footer-item" :to="{ name: 'Course', params: { id: course.id } }">Продолжить</router-link>
+            
+            
         </footer>
 
     </div>

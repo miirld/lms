@@ -32,15 +32,24 @@ class Course(models.Model):
         max_length=255, blank=True, null=True, verbose_name='Описание для превью')
     description = models.TextField(
         blank=True, null=True, verbose_name='Описание')
-    created_at = models.DateField(
+    created_at = models.DateTimeField(
         auto_now_add=True, verbose_name='Дата создания')
     image = models.ImageField(
         upload_to='uploads', blank=True, null=True, verbose_name='Изображение')
     status = models.CharField(
         max_length=25, choices=STATUS_CHOICES, default=DRAFT, verbose_name='Статус')
 
+    @property
+    def clamped_title(self):
+        if len(self.title) > 100:
+            return self.title[0:100] + '...'
+        else:
+            return self.title
+
+    clamped_title.fget.short_description = 'Текст'
+
     def __str__(self):
-        return self.title
+        return self.clamped_title
 
     def get_image(self):
         if self.image:
@@ -52,3 +61,60 @@ class Course(models.Model):
         verbose_name = 'Курс'
         verbose_name_plural = 'Курсы'
 
+
+class Lesson(models.Model):
+    DRAFT = 'draft'
+    PUBLISHED = 'published'
+
+    CHOICES_STATUS = (
+        (DRAFT, 'Черновик'),
+        (PUBLISHED, 'Опубликован'),
+    )
+
+    ARTICLE = 'article'
+    QUIZ = 'quiz'
+    VIDEO = 'video'
+
+    CHOICES_LESSON_TYPE = (
+        (ARTICLE, 'Статья'),
+        (QUIZ, 'Викторина'),
+        (VIDEO, 'Видео'),
+
+    )
+
+    course = models.ForeignKey(
+        Course, related_name='lessons', on_delete=models.CASCADE, verbose_name='Курс')
+    title = models.CharField(max_length=255, verbose_name='Название')
+    content = models.TextField(blank=True, null=True, verbose_name='Контент')
+    status = models.CharField(
+        max_length=20, choices=CHOICES_STATUS, default=DRAFT, verbose_name='Статус')
+    lesson_type = models.CharField(
+        max_length=20, choices=CHOICES_LESSON_TYPE, default=ARTICLE, verbose_name='Тип')
+    youtube_id = models.CharField(
+        max_length=20, blank=True, null=True, verbose_name='Ссылка на видео')
+    
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Урок'
+        verbose_name_plural = 'Уроки'
+
+
+class Quiz(models.Model):
+    lesson = models.ForeignKey(
+        Lesson, related_name='quizzes', on_delete=models.CASCADE, verbose_name='Урок')
+    question = models.CharField(
+        max_length=255, null=True, verbose_name='Вопрос')
+    answer = models.CharField(
+        max_length=255, null=True, verbose_name='Правильный ответ')
+    opt1 = models.CharField(max_length=255, null=True,
+                            verbose_name='Ответ 1')
+    opt2 = models.CharField(max_length=255, null=True,
+                            verbose_name='Ответ 2')
+    opt3 = models.CharField(max_length=255, null=True,
+                            verbose_name='Ответ 3')
+
+    class Meta:
+        verbose_name = 'Викторина'
+        verbose_name_plural = 'Викторины'

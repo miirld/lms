@@ -3,6 +3,7 @@ import Home from "../views/HomeView.vue";
 import Login from "../views/LoginView.vue";
 import MyAccount from "../views/MyAccountView.vue";
 import Courses from "../views/CoursesView.vue";
+import Course from "../views/CourseView.vue";
 
 const routes = [
 	{
@@ -29,6 +30,11 @@ const routes = [
 				return { name: "Home" };
 			}
 		},
+	},
+	{
+		path: "/courses/:id",
+		name: "Course",
+		component: Course,
 	},
 ];
 
