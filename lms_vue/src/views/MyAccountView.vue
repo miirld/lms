@@ -1,5 +1,5 @@
 <template>
-    <div class="about">
+    <div class="account">
         <div class="hero is-primary">
             <div class="hero-body has-text-centered">
                 <h1 class="title">Личный кабинет</h1>

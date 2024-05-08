@@ -5,7 +5,7 @@
             <div class="container">
                 <div class="columns">
                     <div class="column is-3" id="filter">
-                        <HomeMenu :datesSelected='datesSelected' @resetFilters="resetFilters" @clearDates="clearDates" />
+                        <HomeMenu @resetFilters="resetFilters" />
                     </div>
                     <div class="column is-7 mx-2">
                         <div class="columns is-multiline">
@@ -20,7 +20,7 @@
                                     <Trigger v-if="hasNext" @triggerIntersected="loadMoreCourses" />
                                 </template>
                                 <template v-else>
-                                    <h3 class="subtitle is-3 has-text-grey" style="height:75vh;">Новостей нет</h3>
+                                    <h3 class="subtitle is-3 has-text-grey">Новостей нет</h3>
                                 </template>
                             </div>
                         </div>
@@ -38,7 +38,7 @@ img {
     position: relative;
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 768px) {
     #filter {
         height: 100%;
         position: sticky;
@@ -88,6 +88,7 @@ export default {
         loadFirstCourses() {
             this.news = []
             this.currentPage = 1
+            this.hasNext = false
             this.loadCourses()
         },
         loadMoreCourses() {

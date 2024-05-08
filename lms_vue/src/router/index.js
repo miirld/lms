@@ -4,12 +4,18 @@ import Login from "../views/LoginView.vue";
 import MyAccount from "../views/MyAccountView.vue";
 import Courses from "../views/CoursesView.vue";
 import Course from "../views/CourseView.vue";
+import Test from "../views/Test.vue";
 
 const routes = [
 	{
 		path: "/",
 		name: "Home",
 		component: Home,
+	},
+	{
+		path: "/test",
+		name: "Test",
+		component: Test,
 	},
 	{
 		path: "/my-account",

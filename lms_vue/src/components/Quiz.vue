@@ -1,35 +1,51 @@
 <template>
     <div class="quiz">
-        <h3>{{ quiz.question }}</h3>
-        <div class="control">
-            <label class="radio">
-                <input type="radio" :value="quiz.opt1" v-model="selectedAnswer"> {{
-            quiz.opt1 }}
-            </label>
+        <div class="box">
+            <h6 class="title is-6">{{ quiz.question }} </h6>
+            <template v-if="quizResult == 'Верно'">
+                <div class="mb-4">
+                    <b-icon icon="checkbox-marked-circle" size="is-small" type="is-primary">
+                    </b-icon>
+                    Верно!
+                </div>
+            </template>
+            <template v-if="quizResult == 'Неверно'">
+                <div class="mb-4">
+                    <b-icon icon="close-circle" size="is-small">
+                    </b-icon>
+                    Неверно. Попробуйте ещё раз
+                </div>
+            </template>
+            <div class="control">
+                <label class="radio">
+                    <input type="radio" :value="quiz.opt1" v-model="selectedAnswer"> {{
+                        quiz.opt1 }}
+                </label>
+            </div>
+            <div class="control">
+                <label class="radio">
+                    <input type="radio" :value="quiz.opt2" v-model="selectedAnswer"> {{
+                        quiz.opt2 }}
+                </label>
+            </div>
+            <div class="control">
+                <label class="radio">
+                    <input type="radio" :value="quiz.opt3" v-model="selectedAnswer"> {{
+                        quiz.opt3 }}
+                </label>
+            </div>
+            <div class="control mt-4">
+                <button class="button is-primary" @click="submitQuiz">Ответить</button>
+            </div>
         </div>
-        <div class="control">
-            <label class="radio">
-                <input type="radio" :value="quiz.opt2" v-model="selectedAnswer"> {{
-            quiz.opt2 }}
-            </label>
-        </div>
-        <div class="control">
-            <label class="radio">
-                <input type="radio" :value="quiz.opt3" v-model="selectedAnswer"> {{
-            quiz.opt3 }}
-            </label>
-        </div>
-        <div class="control mt-4">
-            <button class="button is-info" @click="submitQuiz">Ответить</button>
-        </div>
-        <template v-if="quizResult == 'Верно'">
-            <div class="notification is-success mt-4">Верно!</div>
-        </template>
-        <template v-if="quizResult == 'Неверно'">
-            <div class="notification is-danger mt-4">Неверно! Попробуйте еще раз</div>
-        </template>
     </div>
 </template>
+
+<style scoped>
+input[type="radio"] {
+    accent-color: #e7cf6e;
+}
+</style>
 
 
 <script>
@@ -52,7 +68,7 @@ export default {
                     this.quizResult = 'Неверно'
                 }
             } else {
-                alert('ВЫберите вариант ответа')
+                alert('Выберите вариант ответа')
             }
         },
     }

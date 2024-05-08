@@ -3,13 +3,13 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import "@mdi/font/css/materialdesignicons.css";
-import { Datepicker, Navbar, Icon, Loading } from "buefy";
+import { Datepicker, Navbar, Icon, Loading, Menu, Dropdown, Collapse } from "buefy";
 import axios from "axios";
 import TextClamp from "vue3-text-clamp";
 
 
 // axios.defaults.baseURL = "http://127.0.0.1:8000/api/v1";
-axios.defaults.baseURL = "http://192.168.68.55:8000/api/v1";
+axios.defaults.baseURL = "http://192.168.78.55:8000/api/v1";
 
 axios.interceptors.response.use(
 	function (response) {
@@ -35,4 +35,7 @@ createApp(App)
 	.use(Icon)
 	.use(TextClamp)
 	.use(Loading)
+	.use(Menu)
+	.use(Dropdown)
+	.use(Collapse)
 	.mount("#app");

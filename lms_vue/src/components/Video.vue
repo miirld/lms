@@ -1,12 +1,23 @@
 <template>
     <div class="video-container">
-        <iframe width="560" height="315" :src="'https://www.youtube.com/embed/' + youtube_id"
-            title="YouTube video player" frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
+        <figure class="image is-16by9 mx-0 ">
+            <iframe class="has-ratio" referrerpolicy="strict-origin-when-cross-origin" width="640" height="360"
+                :src="'https://www.youtube.com/embed/' + youtube_id" frameborder="0" allowfullscreen></iframe>
+        </figure>
     </div>
 </template>
+
+
+<style scoped>
+@media screen and (min-width: 768px) {
+    .video-container {
+        max-width: 75%;
+    }
+
+}
+</style>
+
+
 
 <script>
 export default {

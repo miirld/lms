@@ -14,6 +14,9 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
 
 
+
+
+
 class Course(models.Model):
     DRAFT = 'draft'
     PUBLISHED = 'published'
@@ -62,6 +65,20 @@ class Course(models.Model):
         verbose_name_plural = 'Курсы'
 
 
+
+class Chapter(models.Model):
+    title = models.CharField(max_length=255, verbose_name='Название')
+    course = models.ForeignKey(
+        Course, related_name='chapters', on_delete=models.CASCADE, verbose_name='Курс')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Глава'
+        verbose_name_plural = 'Главы'
+
+
 class Lesson(models.Model):
     DRAFT = 'draft'
     PUBLISHED = 'published'
@@ -84,6 +101,7 @@ class Lesson(models.Model):
 
     course = models.ForeignKey(
         Course, related_name='lessons', on_delete=models.CASCADE, verbose_name='Курс')
+    chapter = models.ForeignKey (Chapter, related_name='lessons', on_delete=models.CASCADE, verbose_name='Глава')
     title = models.CharField(max_length=255, verbose_name='Название')
     content = models.TextField(blank=True, null=True, verbose_name='Контент')
     status = models.CharField(
@@ -92,7 +110,7 @@ class Lesson(models.Model):
         max_length=20, choices=CHOICES_LESSON_TYPE, default=ARTICLE, verbose_name='Тип')
     youtube_id = models.CharField(
         max_length=20, blank=True, null=True, verbose_name='Ссылка на видео')
-    
+
     def __str__(self):
         return self.title
 

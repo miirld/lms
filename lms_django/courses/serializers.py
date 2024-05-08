@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Category, Course, Lesson, Quiz
+from .models import Category, Course, Lesson, Quiz, Chapter
 
 from django.contrib.auth import get_user_model
 
@@ -27,13 +27,24 @@ class CourseListSerializer(serializers.ModelSerializer):
                   'created_by', 'categories')
 
 
-class CourseSerializer(serializers.ModelSerializer):
+class CourseMenuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
         fields = ('id', 'title',
                   'description')
 
+class LessonMenuSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chapter
+        fields = ('id', 'title')
+
+
+class ChapterMenuSerializer(serializers.ModelSerializer):
+    lessons = LessonMenuSerializer(many=True)
+    class Meta:
+        model = Chapter
+        fields = ('id', 'title', 'lessons')
 
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:

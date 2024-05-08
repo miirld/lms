@@ -9,7 +9,7 @@ class CourseAdmin(admin.ModelAdmin):
 
 
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'course', 'status', 'lesson_type' ]
+    list_display = ['id', 'title', 'course', 'chapter', 'status', 'lesson_type' ]
     list_display_links= ['id', 'title']
 
 
@@ -21,4 +21,5 @@ admin.site.register(Category)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Quiz,  QuizAdmin)
+admin.site.register(Chapter)
 

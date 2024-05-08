@@ -7,7 +7,7 @@ from rest_framework.pagination import PageNumberPagination
 from .models import Course, Category, Lesson, Quiz
 
 from .serializers import (CategorySerializer, CourseListSerializer,
-                          CourseSerializer, LessonSerializer, QuizSerializer)
+                          QuizSerializer, CourseMenuSerializer, ChapterMenuSerializer, LessonSerializer)
 
 
 class CoursesPageNumberPagination(PageNumberPagination):
@@ -30,7 +30,7 @@ def get_courses(request):
         courses = courses.filter(categories__in=[int(category_id)])
     courses = courses.order_by('-created_at')
     paginator = CoursesPageNumberPagination()
-    paginator.page_size = 5
+    paginator.page_size = 4
     results = paginator.paginate_queryset(courses, request)
     serializer = CourseListSerializer(results, many=True)
     return paginator.get_paginated_response(serializer.data)
@@ -46,18 +46,25 @@ def get_categories(request):
 @api_view(['GET'])
 def get_course(request, id):
     course = Course.objects.get(id=id)
-    course_serializer = CourseSerializer(course)
-    lesson_serializer = LessonSerializer(course.lessons.all(), many=True)
+    course_serializer = CourseMenuSerializer(course)
+    chapter_serializer = ChapterMenuSerializer(course.chapters.all(), many=True)
 
     return Response({
         'course': course_serializer.data,
-        'lessons': lesson_serializer.data
+        'chapters': chapter_serializer.data
     })
 
 
 @api_view(['GET'])
-def get_quiz(request, course_id, lesson_id):
+def get_quiz(request, lesson_id):
     lesson = Lesson.objects.get(id=lesson_id)
     quiz = lesson.quizzes.first()
     serializer = QuizSerializer(quiz)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_lesson(request, lesson_id):
+    lesson = Lesson.objects.get(id=lesson_id)
+    serializer = LessonSerializer(lesson)
     return Response(serializer.data)

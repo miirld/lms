@@ -1,8 +1,22 @@
 <template>
-  <AltNav v-if="$store.state.user.isAuthenticated" />
-  <router-view />
-  <Footer v-if="$store.state.user.isAuthenticated" />
+  <div class="page-wrapper">
+    <AltNav v-if="$store.state.user.isAuthenticated" />
+    <router-view class="content-wrapper" />
+    <Footer v-if="$store.state.user.isAuthenticated" />
+  </div>
 </template>
+
+<style scoped>
+.page-wrapper {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.content-wrapper {
+  flex: 1;
+}
+</style>
 
 <style lang="scss">
 $family-sans-serif: "Arial", "Tahoma", sans-serif;
