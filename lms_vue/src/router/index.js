@@ -4,18 +4,14 @@ import Login from "../views/LoginView.vue";
 import MyAccount from "../views/MyAccountView.vue";
 import Courses from "../views/CoursesView.vue";
 import Course from "../views/CourseView.vue";
-import Test from "../views/Test.vue";
+import Chat from "../views/ChatView.vue";
+import Messages from "../views/MessagesView.vue";
 
 const routes = [
 	{
 		path: "/",
 		name: "Home",
 		component: Home,
-	},
-	{
-		path: "/test",
-		name: "Test",
-		component: Test,
 	},
 	{
 		path: "/my-account",
@@ -26,6 +22,16 @@ const routes = [
 		path: "/courses",
 		name: "Courses",
 		component: Courses,
+	},
+	{
+		path: "/chat",
+		name: "Chat",
+		component: Chat,
+	},
+	{
+		path: "/messages",
+		name: "Messages",
+		component: Messages,
 	},
 	{
 		path: "/log-in",
@@ -42,6 +48,7 @@ const routes = [
 		name: "Course",
 		component: Course,
 	},
+	
 ];
 
 const router = createRouter({

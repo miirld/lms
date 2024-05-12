@@ -7,37 +7,7 @@
                                 icon="dots-horizontal">
                             </b-icon></button></div>
                     <div class="column scrollable is-3 pl-2" v-if="!small || show">
-                        <aside class="menu mb-5">
-                            <template v-for="chapter in chapters" :key="chapter.id">
-                                <ul class="menu-list">
-                                    <li>
-                                        <a v-if="chapter.lessons.length !== 0" class="has-background-light"
-                                            style="pointer-events: none;">
-                                            <p style="overflow-wrap: break-word;">
-                                                <b>
-                                                    <text-clamp :text="chapter.title" :max-height="20" auto-resize />
-                                                </b>
-                                            </p>
-                                        </a>
-                                        <ul>
-                                            <template v-for="lesson in chapter.lessons" :key="lesson.id">
-                                                <li>
-                                                    <a @click="setActiveLesson(lesson.id)"
-                                                        :class="{ 'is-active': activeLessonId === lesson.id }"
-                                                        :title="lesson.title">
-                                                        <p style="overflow-wrap: break-word;">
-                                                            <text-clamp :text="lesson.title" :max-height="20"
-                                                                auto-resize />
-                                                        </p>
-                                                    </a>
-                                                </li>
-                                            </template>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </template>
-
-                        </aside>
+                        <CourseMenu :chapters="chapters" @getLesson="getLesson"/>
                     </div>
                     <div class="column is-9 content">
                         <template v-if="activeLesson">
@@ -85,8 +55,9 @@
 
 <script>
 import axios from 'axios'
-import Quiz from '@/components/Quiz'
-import Video from '@/components/Video'
+import Quiz from '@/components/course/Quiz'
+import Video from '@/components/course/Video'
+import CourseMenu from '@/components/course/CourseMenu'
 
 export default {
     data() {
@@ -95,7 +66,6 @@ export default {
             quiz: {},
 
             chapters: [],
-            activeLessonId: null,
             activeLesson: null,
 
             small: false,
@@ -105,7 +75,8 @@ export default {
     },
     components: {
         Quiz,
-        Video
+        Video,
+        CourseMenu
 
 
     },
@@ -131,10 +102,7 @@ export default {
         window.removeEventListener('resize', this.onResize)
     },
     methods: {
-        setActiveLesson(id) {
-            this.activeLessonId = id
-            this.getLesson()
-        },
+
         getQuiz() {
             axios
                 .get(`/courses/lesson/${this.activeLesson.id}/get-quiz/`)
@@ -142,9 +110,9 @@ export default {
                     this.quiz = response.data
                 })
         },
-        getLesson() {
+        getLesson(id) {
             axios
-                .get(`/courses/lesson/${this.activeLessonId}/`)
+                .get(`/courses/lesson/${id}/`)
                 .then(response => {
                     this.activeLesson = response.data
                     if (this.activeLesson.lesson_type === 'quiz') {

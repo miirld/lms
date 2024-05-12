@@ -15,6 +15,16 @@ from .serializers import UserSerializer, AuthSerializer
 
 from rest_framework.authentication import SessionAuthentication
 
+from rest_framework.decorators import api_view
+
+from rest_framework.response import Response
+
+@api_view(['GET'])
+def me (request):
+    return Response ({
+        'id': request.user.id,
+    })
+
 
 
 class CreateUserView(generics.CreateAPIView):

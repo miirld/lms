@@ -52,9 +52,9 @@
 
 <script>
 import axios from 'axios'
-import CourseItem from '@/components/CourseItem'
-import CoursesMenu from '@/components/CoursesMenu'
-import CoursesPagination from '@/components/CoursesPagination'
+import CourseItem from '@/components/courses/CourseItem'
+import CoursesMenu from '@/components/courses/CoursesMenu'
+import CoursesPagination from '@/components/courses/CoursesPagination'
 
 export default {
     name: 'CourseView',

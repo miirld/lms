@@ -54,7 +54,10 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'news.apps.NewsConfig',
     'study_groups.apps.StudyGroupsConfig',
-    'courses.apps.CoursesConfig'
+    'courses.apps.CoursesConfig',
+    'activities.apps.ActivitiesConfig',
+    'chat.apps.ChatConfig',
+    
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'

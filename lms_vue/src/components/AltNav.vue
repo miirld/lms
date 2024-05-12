@@ -12,6 +12,9 @@
                 <b-navbar-item tag="router-link" :to="{ name: 'Courses' }">
                     Курсы
                 </b-navbar-item>
+                <b-navbar-item tag="router-link" :to="{ name: 'Chat' }">
+                    Общение
+                </b-navbar-item>
             </template>
 
             <template #end>
@@ -47,7 +50,7 @@ export default {
 
             axios.defaults.headers.common['Authorization'] = ''
             localStorage.removeItem('token')
-
+            localStorage.removeItem('user.id')
             this.$store.commit('removeToken')
 
             this.$router.push('/log-in')

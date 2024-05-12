@@ -68,7 +68,7 @@ export default {
     },
 
     methods: {
-        submitForm() {
+        async submitForm() {
             console.log('Подтверждение формы')
             axios.defaults.headers.common['Authorization'] = ''
             localStorage.removeItem('token')
@@ -94,14 +94,13 @@ export default {
                     password: this.password
                 }
 
-                axios
+                await axios
                     .post('/auth/login/', formData)
                     .then(response => {
                         const token = response.data.token
                         this.$store.commit('setToken', token)
                         axios.defaults.headers.common['Authorization'] = 'Token ' + token
                         localStorage.setItem('token', token)
-                        this.$router.push('/')
                     })
                     .catch(error => {
                         if (error.response) {
@@ -113,6 +112,17 @@ export default {
                             this.errors.push(JSON.stringify(error))
                             console.log(JSON.stringify(error))
                         }
+                    })
+
+                await axios
+                    .get('/auth/me')
+                    .then(response => {
+                        this.$store.commit('setUserInfo', response.data)
+                        localStorage.setItem('user.id', response.data.id)
+                        this.$router.push('/')
+                    })
+                    .catch(error => {
+                        console.log(error)
                     })
             }
         }

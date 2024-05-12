@@ -49,9 +49,9 @@ img {
 
 <script>
 import axios from 'axios'
-import Trigger from '@/components/Trigger'
-import ArticleItem from '@/components/ArticleItem'
-import HomeMenu from '@/components/HomeMenu.vue'
+import Trigger from '@/components/news/Trigger'
+import ArticleItem from '@/components/news/ArticleItem'
+import HomeMenu from '@/components/news/HomeMenu.vue'
 
 export default {
     name: 'HomeView',
