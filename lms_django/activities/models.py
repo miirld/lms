@@ -22,7 +22,7 @@ class Activity(models.Model):
         max_length=10, choices=STATUS_CHOICES, default=STARTED, verbose_name='Статус')
     created_by = models.ForeignKey(
         get_user_model(), related_name='created_activities', on_delete=models.CASCADE, verbose_name='Создатель')
-    participant = models.ForeignKey(get_user_model(), related_name='started_activities', on_delete=models.CASCADE, verbose_name='Участник')
+    participant = models.ForeignKey(get_user_model(), related_name='activities', on_delete=models.CASCADE, verbose_name='Участник')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата начала')
 
 

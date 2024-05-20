@@ -23,6 +23,7 @@ from rest_framework.response import Response
 def me (request):
     return Response ({
         'id': request.user.id,
+        'role': request.user.role
     })
 
 

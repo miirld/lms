@@ -6,6 +6,9 @@ import Courses from "../views/CoursesView.vue";
 import Course from "../views/CourseView.vue";
 import Chat from "../views/ChatView.vue";
 import Messages from "../views/MessagesView.vue";
+import AddActivity from "../views/AddActivityView.vue";
+import Activities from "../views/ActivitiesView.vue";
+import ActiveCourse from "../views/ActiveCourseView.vue";
 
 const routes = [
 	{
@@ -24,6 +27,11 @@ const routes = [
 		component: Courses,
 	},
 	{
+		path: "/activities",
+		name: "Activities",
+		component: Activities,
+	},
+	{
 		path: "/chat",
 		name: "Chat",
 		component: Chat,
@@ -32,6 +40,21 @@ const routes = [
 		path: "/messages",
 		name: "Messages",
 		component: Messages,
+	},
+	{
+		path: "/activities",
+		name: "Activities",
+		component: Activities,
+	},
+	{
+		path: "/add-activity",
+		name: "AddActivity",
+		component: AddActivity,
+		beforeEnter: (to, from) => {
+			if (localStorage.getItem("user.role")!=='teacher') {
+				return { name: "Home" };
+			}
+		},
 	},
 	{
 		path: "/log-in",
@@ -47,6 +70,11 @@ const routes = [
 		path: "/courses/:id",
 		name: "Course",
 		component: Course,
+	},
+	{
+		path: "/activities/:id",
+		name: "ActiveCourse",
+		component: ActiveCourse,
 	},
 	
 ];

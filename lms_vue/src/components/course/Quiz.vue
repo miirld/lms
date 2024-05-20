@@ -49,6 +49,9 @@ input[type="radio"] {
 
 
 <script>
+import axios from 'axios'
+
+
 export default {
     props: ['quiz'],
     data() {
@@ -64,6 +67,7 @@ export default {
             if (this.selectedAnswer) {
                 if (this.selectedAnswer === this.quiz.answer) {
                     this.quizResult = 'Верно'
+                           this.$emit('done')
                 } else {
                     this.quizResult = 'Неверно'
                 }

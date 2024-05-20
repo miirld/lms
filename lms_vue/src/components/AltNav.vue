@@ -7,9 +7,12 @@
             </template>
             <template #start>
                 <b-navbar-item tag="router-link" :to="{ name: 'Home' }">
-                    Главная
+                    Новости
                 </b-navbar-item>
-                <b-navbar-item tag="router-link" :to="{ name: 'Courses' }">
+                <b-navbar-item v-if="this.$store.state.user.role=='teacher'" tag="router-link" :to="{ name: 'Courses' }">
+                    Курсы
+                </b-navbar-item>
+                <b-navbar-item v-if="this.$store.state.user.role=='student'" tag="router-link" :to="{ name: 'Activities' }">
                     Курсы
                 </b-navbar-item>
                 <b-navbar-item tag="router-link" :to="{ name: 'Chat' }">
@@ -51,6 +54,7 @@ export default {
             axios.defaults.headers.common['Authorization'] = ''
             localStorage.removeItem('token')
             localStorage.removeItem('user.id')
+            localStorage.removeItem('user.role')
             this.$store.commit('removeToken')
 
             this.$router.push('/log-in')

@@ -15,8 +15,10 @@
                                     <div class="column is-8">
                                         <div class="container">Курсы</div>
                                     </div>
-                                    <div class="column is-4 has-text-right" >
-                                        <router-link :to="{ name: 'AddActivity' }" v-if="this.$store.state.user.role==='teacher'" class="button is-primary">Добавить</router-link>
+                                    <div class="column is-4 has-text-right">
+                                        <router-link :to="{ name: 'AddActivity' }"
+                                            v-if="this.$store.state.user.role === 'teacher'"
+                                            class="button is-primary">Добавить</router-link>
                                     </div>
                                 </div>
                             </div>
@@ -31,7 +33,7 @@
                                 </template>
                             </div>
 
-                            <div v-if="courses.length!==0" class="column is-12">
+                            <div v-if="courses.length !== 0" class="column is-12">
                                 <CoursesPagination :isNextExists="isNextExists" :isPreviousExists="isPreviousExists"
                                     :currentPage="currentPage" :totalPages="totalPages"
                                     @loadNextCoursesPage="loadNextCoursesPage" />
@@ -59,7 +61,7 @@
 
 <script>
 import axios from 'axios'
-import CourseItem from '@/components/courses/CourseItem'
+import CourseItem from '@/components/activities/ActivityItem'
 import CoursesMenu from '@/components/courses/CoursesMenu'
 import CoursesPagination from '@/components/courses/CoursesPagination'
 
@@ -95,6 +97,16 @@ export default {
             this.activeCategoryId = activeCategoryId
             this.loadFirstCourses()
         },
+        loadActivities() {
+            axios
+                .get('/activities/')
+                .then(response => {
+                    console.log(response.data)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
         loadFirstCourses() {
             this.currentPage = 1
             this.loadCourses()
@@ -108,7 +120,7 @@ export default {
             this.isPreviousExists = false
             this.isLoading = true
             await axios
-                .get('/courses/', {
+                .get('/activities/', {
                     params: {
                         page: this.currentPage,
                         category_id: this.activeCategoryId

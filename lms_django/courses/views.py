@@ -6,8 +6,11 @@ from rest_framework.pagination import PageNumberPagination
 
 from .models import Course, Category, Lesson, Quiz
 
+
 from .serializers import (CategorySerializer, CourseListSerializer,
-                          QuizSerializer, CourseMenuSerializer, ChapterMenuSerializer, LessonSerializer)
+                          QuizSerializer, CourseMenuSerializer, ChapterMenuSerializer, LessonSerializer, AssignCourseSerializer)
+
+from study_groups.serializers import (StudyGroupSerializer)
 
 
 class CoursesPageNumberPagination(PageNumberPagination):
@@ -20,6 +23,8 @@ class CoursesPageNumberPagination(PageNumberPagination):
             'total_pages': self.page.paginator.num_pages,
             'results': data
         })
+
+
 
 
 @api_view(['GET'])

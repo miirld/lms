@@ -19,10 +19,8 @@ from django.utils import timezone
 def get_news(request):
     types = request.GET.getlist('types[]', [])
     dates = request.GET.getlist('dates[]', [])
-
     news = News.objects.filter(status=News.PUBLISHED)
-    news = news.filter(created_for_groups__in=request.user.groups.all()) | news.filter(created_for_groups = None)
-    news = news.filter(created_for_studygroups__in=request.user.studygroups.all()) | news.filter(created_for_studygroups = None)
+    news = news.filter(created_for_study_groups__in=request.user.study_groups.all()) | news.filter(created_for_study_groups = None)
     news = news.distinct()
     
 

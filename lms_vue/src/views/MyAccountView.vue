@@ -37,6 +37,7 @@ export default {
             axios.defaults.headers.common['Authorization'] = ''
             localStorage.removeItem('token')
             localStorage.removeItem('user.id')
+            localStorage.removeItem('user.role')
 
             this.$store.commit('removeToken')
 

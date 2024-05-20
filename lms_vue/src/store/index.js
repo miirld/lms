@@ -5,6 +5,7 @@ export default createStore({
 		user: {
 			token: "",
 			id: "",
+			role: "",
 			isAuthenticated: false,
 		},
 	},
@@ -14,11 +15,13 @@ export default createStore({
 			console.log("Инициализация состояния");
 			if (localStorage.getItem("token")) {
 				state.user.token = localStorage.getItem("token");
-				state.user.id = localStorage.getItem("user.id")
+				state.user.id = localStorage.getItem("user.id");
+				state.user.role = localStorage.getItem("user.role");
 				state.user.isAuthenticated = true;
 			} else {
 				state.user.token = "";
-				state.user.id = ""
+				state.user.id = "";
+				state.user.role = "";
 				state.user.isAuthenticated = false;
 			}
 		},
@@ -29,10 +32,12 @@ export default createStore({
 		removeToken(state) {
 			state.user.token = "";
 			state.user.id = ""
+			state.user.role = "";
 			state.user.isAuthenticated = false;
 		},
 		setUserInfo(state, user) {
 			state.user.id = user.id
+			state.user.role = user.role
 		}
 	},
 	actions: {},

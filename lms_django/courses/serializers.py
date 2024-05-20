@@ -5,6 +5,15 @@ from .models import Category, Course, Lesson, Quiz, Chapter
 from django.contrib.auth import get_user_model
 
 
+
+
+
+class AssignCourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ('id', 'clamped_title')
+
+
 class CourseUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
@@ -34,9 +43,16 @@ class CourseMenuSerializer(serializers.ModelSerializer):
         fields = ('id', 'title',
                   'description')
 
+
+class PublishedLessonMenuSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.filter(status=Lesson.PUBLISHED)
+        return super( PublishedLessonMenuSerializer, self).to_representation(data)
+
 class LessonMenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chapter
+        list_serializer_class=PublishedLessonMenuSerializer
         fields = ('id', 'title')
 
 
@@ -45,6 +61,10 @@ class ChapterMenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chapter
         fields = ('id', 'title', 'lessons')
+
+
+
+
 
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:

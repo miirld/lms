@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
 
+from study_groups.models import StudyGroup
+
 
 class Category(models.Model):
     title = models.CharField(max_length=255, verbose_name='Название')
@@ -27,7 +29,9 @@ class Course(models.Model):
     )
 
     created_by = models.ForeignKey(
-        get_user_model(), related_name='courses', on_delete=models.CASCADE, verbose_name='Автор')
+        get_user_model(), related_name='my_courses', on_delete=models.CASCADE, verbose_name='Автор')
+    created_for = models.ManyToManyField(
+        StudyGroup, related_name='courses', verbose_name='Классы')
     title = models.CharField(max_length=255, verbose_name='Название')
     categories = models.ManyToManyField(
         Category, related_name='courses', verbose_name='Категории')
@@ -44,8 +48,8 @@ class Course(models.Model):
 
     @property
     def clamped_title(self):
-        if len(self.title) > 100:
-            return self.title[0:100] + '...'
+        if len(self.title) > 50:
+            return self.title[0:50] + '...'
         else:
             return self.title
 

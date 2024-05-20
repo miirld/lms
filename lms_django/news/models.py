@@ -24,12 +24,10 @@ class News (models.Model):
 
     created_by = models.ForeignKey(
         get_user_model(), related_name='news', on_delete=models.CASCADE, verbose_name='Автор')
-    created_for_groups = models.ManyToManyField(
-        Group, related_name='allowed_news', verbose_name='Новость для группы', blank=True)
-    created_for_studygroups = models.ManyToManyField(
-        StudyGroup, related_name='allowed_news', verbose_name='Новость для класса', blank=True)
+    created_for_study_groups = models.ManyToManyField(
+        StudyGroup, related_name='news', verbose_name='Класс читателей', blank=True)
     content = models.TextField(verbose_name='Текст')
-    created_at = models.DateTimeField(verbose_name='Дата и время создания')
+    created_at = models.DateTimeField(verbose_name='Дата и время создания', auto_now_add=True)
     status = models.CharField(
         max_length=25, choices=STATUS_CHOICES, default=DRAFT, verbose_name='Статус')
     type = models.CharField(

@@ -9,13 +9,20 @@
                     <div class="column is-3 pl-2" v-if="!small || show">
                         <div class="columns is-multiline">
                             <div class="column is-12 pr-5">
-                                <div class="field has-addons">
+                                <div class="field has-addons mb-0">
                                     <div class="control is-expanded">
-                                        <input class="input is-primary" type="text" placeholder="Введите имя">
+                                        <input v-model='search' class="search input is-primary" type="text"
+                                            placeholder="Искать среди всех">
                                     </div>
                                     <div class="control">
-                                        <a class="button is-primary">
+                                        <a class="button is-primary" @click="searchInterlocutors">
                                             <b-icon icon="magnify">
+                                            </b-icon>
+                                        </a>
+                                    </div>
+                                    <div class="control">
+                                        <a class="button is-primary" @click="searchReset">
+                                            <b-icon icon="close">
                                             </b-icon>
                                         </a>
                                     </div>
@@ -24,31 +31,26 @@
                             <div class="column is-12 scrollable">
                                 <aside class="menu">
                                     <ul class="menu-list">
-                                        <template v-for="conversation in conversations" :key="conversation.id">
-                                            <template v-for="user in conversation.users" :key="user.id">
-                                                <li @click="setActiveConversation(conversation.id)" v-if="user.id != this.$store.state.user.id">
-                                                    <a
-                                                        :title="user.last_name + ' ' + user.first_name + ' ' + user.patronymic">
-                                                        <div class="columns is-mobile">
-                                                            <div class="column is-narrow pr-0">
-                                                                <figure class="image is-48x48 mx-0">
-                                                                    <img class="is-rounded" :src="user.get_image" />
-                                                                </figure>
-                                                            </div>
-                                                            <div class="column">
-                                                                <p>
-                                                                    <strong><text-clamp
-                                                                            :text="user.last_name + ' ' + user.first_name + ' ' + user.patronymic"
-                                                                            :max-height="20" auto-resize /></strong>
-                                                                    <small><text-clamp
-                                                                            :text="conversation.modified_at_formatted + ' назад'"
-                                                                            :max-height="20" auto-resize /></small>
-                                                                </p>
-                                                            </div>
+                                        <template v-for="user in interlocutors" :key="user.id">
+                                            <li @click="setActiveConversation(user.id)">
+                                                <a
+                                                    :title="user.last_name + ' ' + user.first_name + ' ' + user.patronymic">
+                                                    <div class="columns is-mobile">
+                                                        <div class="column is-narrow pr-0">
+                                                            <figure class="image is-48x48 mx-0">
+                                                                <img class="is-rounded" :src="user.get_image" />
+                                                            </figure>
                                                         </div>
-                                                    </a>
-                                                </li>
-                                            </template>
+                                                        <div class="column py-5">
+                                                            <p>
+                                                                <strong><text-clamp
+                                                                        :text="user.last_name + ' ' + user.first_name + ' ' + user.patronymic"
+                                                                        :max-height="20" auto-resize /></strong>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
                                         </template>
                                     </ul>
                                 </aside>
@@ -62,7 +64,7 @@
                                     Общение
                                 </p>
                             </div>
-                            <div class="p-3 chat-wrap">
+                            <div class="p-3 mb-1 chat-wrap box">
                                 <div class="p-5 overflow-chat">
                                     <template v-for="message in this.activeConversation.messages">
                                         <template v-if="message.created_by.id == this.$store.state.user.id">
@@ -142,6 +144,7 @@
 .scrollable {
     max-height: calc(90vh - 87.911px - 64px);
     overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-width: thin
 }
 
@@ -164,6 +167,7 @@
 .overflow-chat {
     flex: 1;
     overflow-y: scroll;
+
     scrollbar-width: thin
 }
 
@@ -198,6 +202,15 @@
     display: flex;
     flex-direction: column;
 }
+
+.box {
+    box-shadow: 0 0em 0em 0.125em rgba(10, 10, 10, 0.1);
+
+}
+
+input.search:focus {
+    box-shadow: inset 0 0.0625em 0.125em rgba(10, 10, 10, 0.05);
+}
 </style>
 
 
@@ -207,18 +220,17 @@ export default {
     name: 'chat',
     data() {
         return {
-            conversations: [],
-            activeConversation: {},
+            interlocutors: [],
+            activeConversation: '',
             body: '',
-
-
+            search: '',
             small: false,
             show: false
         }
     },
     mounted() {
         document.title = 'Общение | Роснефть класс'
-        this.getConversations()
+        this.getInterlocutors()
     },
     created() {
         window.addEventListener('resize', this.onResize);
@@ -228,62 +240,76 @@ export default {
         window.removeEventListener('resize', this.onResize)
     },
     methods: {
-        setActiveConversation(id){
-            this.activeConversation = id
-            this.getMessages()
-            
+        searchReset() {
+            this.search = ''
+            this.getInterlocutors()
+        },
+        searchInterlocutors() {
+            if (this.search) {
+                axios
+                    .get('/chat/search', {
+                        params: {
+                            search: this.search,
 
+                        }
+                    })
+                    .then(response => {
+                        this.interlocutors = response.data
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            }
         },
 
-        async submitForm() {
-            console.log('submitForm', this.body)
-
-            await axios
-                .post(`/chat/${this.activeConversation.id}/send/`, {
-                    body: this.body
-                })
-                .then(response => {
-                    this.activeConversation.messages.push(response.data)
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-
-            this.body = ''
-
+        setActiveConversation(interlocutor_id) {
+            this.activeConversation = interlocutor_id
+            this.getConversation()
         },
-        getMessages() {
-            console.log('getMessages')
 
+        getConversation() {
             axios
                 .get(`/chat/${this.activeConversation}`)
                 .then(response => {
                     this.activeConversation = response.data
-                    console.log(response.data)
                 })
                 .catch(error => {
                     console.log(error)
                 })
-
         },
 
-        getConversations() {
+        getInterlocutors() {
             axios
                 .get('/chat/')
                 .then(response => {
-                    this.conversations = response.data
-                    if (this.conversations.length) {
-                        this.activeConversation = this.conversations[0].id
-                    }
-                    this.getMessages()
+                    this.interlocutors = response.data
                 })
                 .catch(error => {
                     console.log(error)
                 })
+        },
+
+        async submitForm() {
+            if (this.body && this.activeConversation) {
+                await axios
+                    .post(`/chat/${this.activeConversation.id}/send/`, {
+                        body: this.body
+                    })
+                    .then(response => {
+                        this.activeConversation.messages.push(response.data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+
+                this.body = ''
+            }
+
         },
         onResize() {
             this.small = window.innerWidth <= 768;
         },
+
         setShow() {
             if (this.show) {
                 this.show = false

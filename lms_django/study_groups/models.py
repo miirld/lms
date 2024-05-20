@@ -1,12 +1,13 @@
 from django.db import models
 from .validators import validate_year
 
-#TODO 1.) Добавить поля school и city к StudyGroup, которые будут ModelChoiceField
 
 
 class School(models.Model):
-    full_name = models.CharField(max_length=255, verbose_name='Полное наименование')
-    short_name = models.CharField(max_length=255, verbose_name='Короткое наименование')
+    full_name = models.CharField(
+        max_length=255, verbose_name='Полное наименование')
+    short_name = models.CharField(
+        max_length=255, verbose_name='Короткое наименование')
     address = models.CharField(max_length=255, verbose_name='Адрес')
 
     def __str__(self):
@@ -15,7 +16,6 @@ class School(models.Model):
     class Meta:
         verbose_name = 'Школа'
         verbose_name_plural = 'Школы'
-
 
 
 class StudyGroup(models.Model):
@@ -36,19 +36,24 @@ class StudyGroup(models.Model):
         ('Э', 'Э'), ('Ю', 'Ю'), ('Я', 'Я')
     )
 
+
+
     grade = models.IntegerField(choices=GRADE_CHOICES, verbose_name='Класс')
     letter = models.CharField(
         max_length=1, choices=LETTER_CHOICES, verbose_name='Литера')
     school = models.ForeignKey(
         School, related_name='study_groups', verbose_name='Школа', null=True, on_delete=models.SET_NULL)
-    entrance_year = models.IntegerField(verbose_name='Год поступления',validators=[validate_year])
-    graduation_yeaer = models.IntegerField(verbose_name='Год выпуска',validators=[validate_year])
+    entrance_year = models.IntegerField(
+        verbose_name='Год поступления', validators=[validate_year])
+    graduation_yeaer = models.IntegerField(
+        verbose_name='Год выпуска', validators=[validate_year])
     is_active = models.BooleanField(verbose_name='Активен', default=False)
 
     def __str__(self):
         return f"{self.grade}{self.letter} ({self.entrance_year}-{self.graduation_yeaer}) {self.school.short_name}"
 
     class Meta:
-        unique_together = ('grade', 'letter','school', 'entrance_year', 'graduation_yeaer')
+        unique_together = ('grade', 'letter', 'school',
+                           'entrance_year', 'graduation_yeaer')
         verbose_name = 'Класс'
         verbose_name_plural = 'Классы'

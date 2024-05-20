@@ -119,6 +119,7 @@ export default {
                     .then(response => {
                         this.$store.commit('setUserInfo', response.data)
                         localStorage.setItem('user.id', response.data.id)
+                        localStorage.setItem('user.role', response.data.role)
                         this.$router.push('/')
                     })
                     .catch(error => {
