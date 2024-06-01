@@ -35,6 +35,7 @@ def get_activity_courses(request):
     serializer = CourseListSerializer(results, many=True)
     return paginator.get_paginated_response(serializer.data)
 
+
 @api_view(['GET'])
 def get_progress_courses(request):
     if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
@@ -54,6 +55,25 @@ def get_progress_courses(request):
     else:
         return Response(status=status.HTTP_403_FORBIDDEN)
 
+
+@api_view(['GET'])
+def get_my_groups(request):
+    if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
+        study_groups = StudyGroup.objects.none()
+        for activity in request.user.created_activities.all():
+            for study_group in activity.participant.study_groups.all():
+                if study_group not in study_groups:
+                    study_groups |= StudyGroup.objects.filter(
+                        id=study_group.id)
+        paginator = CoursesPageNumberPagination()
+        paginator.page_size = 5
+        results = paginator.paginate_queryset(study_groups, request)
+        serializer = ProgressStudyGroupSerializer(results, many=True)
+        return paginator.get_paginated_response(serializer.data)
+    else:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+
 @api_view(['GET'])
 def get_progress(request, course_id):
     if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
@@ -61,32 +81,64 @@ def get_progress(request, course_id):
         for activity in request.user.created_activities.all():
             for study_group in activity.participant.study_groups.all():
                 if study_group not in study_groups and activity.lesson.course.id == course_id:
-                    study_groups |= StudyGroup.objects.filter(id=study_group.id)
+                    study_groups |= StudyGroup.objects.filter(
+                        id=study_group.id)
         paginator = CoursesPageNumberPagination()
         paginator.page_size = 5
         results = paginator.paginate_queryset(study_groups, request)
         serializer = ProgressStudyGroupSerializer(results, many=True)
         for study_group in serializer.data:
             for member in study_group['members']:
-                activities = Activity.objects.filter(participant__id=member['id'], course__id = course_id ).order_by("lesson__chapter__list_order", "lesson__list_order", )
-                serializer_activities = ProgressActivitySerializer(activities, many=True)
-                member['activities'] = serializer_activities.data    
+                activities = Activity.objects.filter(participant__id=member['id'], course__id=course_id).order_by(
+                    "lesson__chapter__list_order", "lesson__list_order", )
+                serializer_activities = ProgressActivitySerializer(
+                    activities, many=True)
+                member['activities'] = serializer_activities.data
         return paginator.get_paginated_response(serializer.data)
     else:
         return Response(status=status.HTTP_403_FORBIDDEN)
 
+
 @api_view(['GET'])
-def get_course_name(request, course_id):
-    course = Course.objects.get(id=course_id)
-    serializer = ProgressCourseSerializer(course, many=False)
-    return Response (serializer.data)
+def get_my_group_progress(request, group_id):
+    if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
+        courses = Course.objects.none()
+        studygroup = StudyGroup.objects.get(id=group_id)
+        for activity in request.user.created_activities.all():
+            if activity.course not in courses and activity.participant in studygroup.members.all():
+                courses |= Course.objects.filter(id=activity.course.id)
+        print(courses)
+        paginator = CoursesPageNumberPagination()
+        paginator.page_size = 5
+        results = paginator.paginate_queryset(courses, request)
+        serializer_course = ProgressCourseSerializer(results, many=True)
+        for course in serializer_course.data:
+            course['members'] = ProgressUserSerializer(get_user_model().objects.filter(
+                study_groups__in=[int(group_id)]), many=True).data
+            for member in course['members']:
+                activities = Activity.objects.filter(participant__id=member['id'], lesson__course__id=course['id']).order_by(
+                    "lesson__chapter__list_order", "lesson__list_order", )
+                ser_activities = ProgressActivitySerializer(
+                    activities, many=True)
+                member['activities'] = ser_activities.data
+        return paginator.get_paginated_response(serializer_course.data)
+    else:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(['GET'])
+def get_group_name(request, group_id):
+    group = StudyGroup.objects.get(id=group_id)
+    serializer = ProgressStudyGroupSerializer(group, many=False)
+    return Response(serializer.data)
+
 
 @api_view(['GET'])
 def get_data_for_activity(request):
     if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
         study_groups = StudyGroup.objects.filter(
-            members__in=([request.user.id])) 
-        if len(request.user.study_groups.all()) == 0 :
+            members__in=([request.user.id]))
+        if len(request.user.study_groups.all()) == 0:
             study_groups = StudyGroup.objects.all()
         study_groups_serializer = StudyGroupSerializer(study_groups, many=True)
         return Response(study_groups_serializer.data)
@@ -102,7 +154,8 @@ def assign_activity(request):
         users = get_user_model().objects.filter(study_groups__in=(
             [study_group_id])).filter(role=get_user_model().STUDENT)
         course = Course.objects.get(id=course_id)
-        lessons = Lesson.objects.filter(course=course_id, status=Lesson.PUBLISHED)
+        lessons = Lesson.objects.filter(
+            course=course_id, status=Lesson.PUBLISHED)
 
         for lesson in lessons:
             for user in users:

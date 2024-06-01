@@ -16,7 +16,7 @@
                                         <div class="container">Курсы</div>
                                     </div>
                                     <div class="column is-4 has-text-right" >
-                                        <router-link :to="{ name: 'AddActivity' }" v-if="this.$store.state.user.role==='teacher'" class="button is-primary">Добавить</router-link>
+                                        <router-link :to="{ name: 'AddActivity' }" v-if="this.$store.state.user.role==='teacher' || this.$store.state.user.role==='tutor'" class="button is-primary">Добавить</router-link>
                                     </div>
                                 </div>
                             </div>

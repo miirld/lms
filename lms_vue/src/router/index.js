@@ -106,7 +106,7 @@ const routes = [
 		},
 	},
 	{
-		path: "/course/:id/progress",
+		path: "/group/:id/progress",
 		name: "CourseProgress",
 		component: CourseProgress,
 		beforeEnter: (to, from) => {

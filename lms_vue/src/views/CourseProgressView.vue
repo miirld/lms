@@ -5,47 +5,55 @@
                 <div class="columns is-multiline">
                     <div class="column is-12">
                         <p class="is-size-4">
-                            Успеваемость по курсу "{{ course.title }}"
+                            Успеваемость группы {{ group.grade }}{{ group.letter }} {{ group.school.short_name }}
                         </p>
                     </div>
-                    <div class="column is-12 mb-3">
-                        <div class="mb-3" v-for="group in groups">
-                            <b-collapse :modelValue="false" class="card" animation="slide" aria-id="contentIdForA11y3">
-                                <template #trigger="props">
-                                    <div class="card-header" role="button" aria-controls="contentIdForA11y3"
-                                        :aria-expanded="props.open">
-                                        <p class="card-header-title">
-                                            {{ group.grade }} {{ group.letter }} {{ group.school.short_name }}
-                                        </p>
-                                        <a class="card-header-icon">
-                                            <b-icon :icon="props.open ? 'menu-down' : 'menu-up'">
-                                            </b-icon>
-                                        </a>
-                                    </div>
-                                </template>
-
-                                <div class="card-content">
-                                    <div class="content">
-                                        <div class="mb-3 box" v-for="member in group.members">
-                                            <p>{{ member.first_name }} {{ member.last_name }} {{
-                                                member.patronymic }}</p>
-                                            <template v-for="activity in member.activities">
-                                                <b-icon
-                                                    :title="activity.lesson.title + ' - ' + activity.lesson.chapter.title"
-                                                    icon="square"
-                                                    :type="activity.status == 'done' ? 'is-primary' : 'is-light'">
+                    <template v-if="totalCourses !== 0">
+                        <div class="column is-12 mb-3">
+                            <div class="mb-3" v-for="course in courses">
+                                <b-collapse :modelValue="false" class="card" animation="slide"
+                                    aria-id="contentIdForA11y3">
+                                    <template #trigger="props">
+                                        <div class="card-header" role="button" aria-controls="contentIdForA11y3"
+                                            :aria-expanded="props.open">
+                                            <p class="card-header-title">
+                                                {{ course.title }}
+                                            </p>
+                                            <a class="card-header-icon">
+                                                <b-icon :icon="props.open ? 'menu-down' : 'menu-up'">
                                                 </b-icon>
-                                            </template>
+                                            </a>
+                                        </div>
+                                    </template>
 
+                                    <div class="card-content">
+                                        <div class="content">
+                                            <div class="mb-3 box" v-for="member in course.members">
+                                                <p>{{ member.first_name }} {{ member.last_name }} {{
+                                                    member.patronymic }}</p>
+                                                <template v-for="activity in member.activities">
+                                                    <b-icon
+                                                        :title="activity.lesson.title + ' - ' + activity.lesson.chapter.title"
+                                                        icon="square"
+                                                        :type="activity.status == 'done' ? 'is-primary' : 'is-light'">
+                                                    </b-icon>
+                                                </template>
+
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </b-collapse>
+                                </b-collapse>
+                            </div>
+                            </div>
+                    </template>
+                    <template v-else>
+                        <div class="column is-12">
+                            <h3 class="subtitle is-3 has-text-grey">У Вас нет назначенных активностей у этой группы</h3>
                         </div>
+                    </template>
 
 
-                    </div>
-                    <div class="coloumn is-12 pl-3">
+                    <div class="coloumn is-12 pl-3" v-if="courses.length !== 0">
                         <CoursesPagination :isNextExists="isNextExists" :isPreviousExists="isPreviousExists"
                             :currentPage="currentPage" :totalPages="totalPages"
                             @loadNextCoursesPage="loadNextCoursesPage" />
@@ -64,8 +72,8 @@ export default {
     name: 'EducationalProgress',
     data() {
         return {
-            groups: {},
-            course: {},
+            courses: {},
+            group: { school: {} },
             isNextExists: false,
             isPreviousExists: false,
             currentPage: null,
@@ -78,17 +86,17 @@ export default {
         CoursesPagination
     },
     async mounted() {
-        this.loadFirstCourses()
         const id = this.$route.params.id
+        this.loadFirstCourses()
         await axios
             .get(`activities/course-progress/${id}/`)
             .then(response => {
-                this.course = response.data
+                console.log(response.data)
+                this.group = response.data
             })
             .catch(error => {
                 console.log(error)
             })
-        document.title = 'Успеваемость- '+ this.course.title + ' | Роснефть класс'
     },
     methods: {
         loadFirstCourses() {
@@ -99,19 +107,19 @@ export default {
             this.currentPage = n
             this.loadCourses()
         },
-        async loadCourses() {
+        loadCourses() {
             const id = this.$route.params.id
-            this.isNextExists = false
-            this.isPreviousExists = false
-            this.isLoading = true
-            await axios
-                .get(`activities/course-progress/${id}/groups`, {
+            axios
+                .get(`activities/group-progress/${id}/`, {
                     params: {
                         page: this.currentPage,
                     }
                 })
                 .then(response => {
-                    this.groups = response.data.results
+                    console.log(response.data)
+                    this.isNextExists = false
+                    this.isPreviousExists = false
+                    this.courses = response.data.results
                     this.totalPages = response.data.total_pages
                     this.totalCourses = response.data.count
                     if (response.data.previous) {

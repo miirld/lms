@@ -2,40 +2,43 @@
     <div class="courses">
         <section class="section">
             <div class="container">
-                <div class="columns">
-
-                    <div class="column is-2" id="filter">
-                        <CoursesMenu @resetCategory="resetCategory" />
+                <div class="columns is-multiline">
+                    <div class="column is-12 is-size-4">
+                        <div class="container">Успеваемость</div>
                     </div>
+                    <template v-if="totalCourses !== 0">
+                        <div class="column is-12" v-for="group in groups">
+                            <div class="card">
+                                <div class="card-content is-size-5">
+                                    <b-icon icon="account-group">
+                                    </b-icon>
+                                    {{ group.grade }} {{ group.letter }} {{ group.school.short_name }}
+                                </div>
 
-                    <div class="column is-10 mx-2">
-                        <div class="columns is-multiline">
-                            <div class="column is-12 is-size-4">
-                                <div class="container">Успеваемость</div>
-                            </div>
-                            <div class="column is-12">
-                                <template v-if="totalCourses !== 0">
-                                    <template v-for=" course in courses" v-bind:key="course.id">
-                                        <ProgressItem class="mb-5" :course="course" />
-                                    </template>
-                                </template>
-                                <template v-else>
-                                    <h3 class="subtitle is-3 has-text-grey">Курсов нет</h3>
-                                </template>
-                            </div>
+                                <footer class="card-footer">
+                                    <router-link class="card-footer-item"
+                                        :to="{ name: 'CourseProgress', params: { id: group.id } }">Смотреть
+                                        прогресс</router-link>
 
-                            <div v-if="courses.length !== 0" class="column is-12">
-                                <CoursesPagination :isNextExists="isNextExists" :isPreviousExists="isPreviousExists"
-                                    :currentPage="currentPage" :totalPages="totalPages"
-                                    @loadNextCoursesPage="loadNextCoursesPage" />
+                                </footer>
+
                             </div>
 
                         </div>
+                    </template>
+                    <template v-else>
+                        <div class="column is-12">
+                            <h3 class="subtitle is-3 has-text-grey">Вы не назначали активности ни одной группе</h3>
+                        </div>
+                    </template>
+                    <div class="column is-12" v-if="groups.length !== 0">
+                        <CoursesPagination :isNextExists="isNextExists" :isPreviousExists="isPreviousExists"
+                            :currentPage="currentPage" :totalPages="totalPages"
+                            @loadNextCoursesPage="loadNextCoursesPage" />
                     </div>
                 </div>
             </div>
         </section>
-        <b-loading v-model="isLoading" :is-full-page="true"></b-loading>
     </div>
 </template>
 
@@ -60,44 +63,27 @@ export default {
     name: 'CourseView',
     data() {
         return {
-            courses: [],
+            groups: [],
             isNextExists: false,
             isPreviousExists: false,
             currentPage: null,
             totalPages: 0,
             totalCourses: null,
             isLoading: true,
-            activeCategoryId: null,
 
         }
     },
 
     components: {
-        ProgressItem,
-        CoursesMenu,
         CoursesPagination
     },
 
-    async mounted() {
+    mounted() {
         document.title = 'Успеваемость | Роснефть класс'
         this.loadFirstCourses()
     },
 
     methods: {
-        resetCategory(activeCategoryId) {
-            this.activeCategoryId = activeCategoryId
-            this.loadFirstCourses()
-        },
-        loadActivities() {
-            axios
-                .get('/activities/')
-                .then(response => {
-                    console.log(response.data)
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        },
         loadFirstCourses() {
             this.currentPage = 1
             this.loadCourses()
@@ -106,21 +92,20 @@ export default {
             this.currentPage = n
             this.loadCourses()
         },
-        async loadCourses() {
-            this.isNextExists = false
-            this.isPreviousExists = false
-            this.isLoading = true
-            await axios
-                .get('/activities/progress/', {
+        loadCourses() {
+            axios
+                .get('/activities/my-groups/', {
                     params: {
                         page: this.currentPage,
-                        category_id: this.activeCategoryId
                     }
                 })
                 .then(response => {
-                    this.courses = response.data.results
+                    console.log(response.data)
+                    this.groups = response.data.results
                     this.totalPages = response.data.total_pages
                     this.totalCourses = response.data.count
+                    this.isNextExists = false
+                    this.isPreviousExists = false
                     if (response.data.previous) {
                         this.isPreviousExists = true
                     }
@@ -131,8 +116,6 @@ export default {
                 .catch(error => {
                     console.log(error)
                 })
-            window.scrollTo(0, 0);
-            this.isLoading = false
         },
     },
 }

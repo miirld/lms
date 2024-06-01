@@ -32,12 +32,19 @@ class ProgressUserSerializer(serializers.ModelSerializer):
         fields = ('id', 'first_name', 'last_name', 'patronymic')
         
 
+# class ProgressStudyGroupSerializer(serializers.ModelSerializer):
+#     school = ProgressSchoolSerializer(many=False)
+#     members = ProgressUserSerializer(many=True)
+#     class Meta:
+#         model = StudyGroup
+#         fields = ('id', 'grade', 'letter', 'school', 'members')
+
+
 class ProgressStudyGroupSerializer(serializers.ModelSerializer):
     school = ProgressSchoolSerializer(many=False)
-    members = ProgressUserSerializer(many=True)
     class Meta:
         model = StudyGroup
-        fields = ('id', 'grade', 'letter', 'school', 'members')
+        fields = ('id', 'grade', 'letter', 'school')
 
 class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -59,7 +66,11 @@ class ProgressActivitySerializer(serializers.ModelSerializer):
 class ProgressCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ('title', )
+        fields = ('id','title' )
+
+
+
+
 
 
     
