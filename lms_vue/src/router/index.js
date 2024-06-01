@@ -11,12 +11,24 @@ import Activities from "../views/ActivitiesView.vue";
 import ActiveCourse from "../views/ActiveCourseView.vue";
 import EducationalProgress from "../views/EducationalProgressView.vue"
 import CourseProgress from "../views/CourseProgressView.vue"
+import Landing from "../views/LandingView.vue"
 const routes = [
 	{
 		path: "/",
 		name: "Home",
 		component: Home,
 	},
+	{
+		path: "/welcome",
+		name: "Welcome",
+		component: Landing,
+		beforeEnter: (to, from) => {
+			if (localStorage.getItem("token")) {
+				return { name: "Welcome" };
+			}
+		},
+	},
+
 	{
 		path: "/my-account",
 		name: "MyAccount",
@@ -123,8 +135,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from) => {
-	if (!localStorage.getItem("token") && to.name !== "Login") {
-		return { name: "Login" };
+	if (!localStorage.getItem("token") && (to.name !== "Login" && to.name !== "Welcome")) {
+		return { name: "Welcome" };
 	}
 });
 

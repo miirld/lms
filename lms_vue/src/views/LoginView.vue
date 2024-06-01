@@ -2,7 +2,7 @@
     <div class="login">
         <div class="hero is-primary">
             <div class="hero-body has-text-centered">
-                <h1 class="title">Роснефть-класс Авторизация</h1>
+                <h1 class="title">Авторизация</h1>
             </div>
         </div>
         <section class="section">

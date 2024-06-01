@@ -2,7 +2,7 @@
     <header>
         <b-navbar class="is-primary has-text-weight-semibold">
             <template #brand>
-                <b-navbar-item tag="router-link" id="logo" :to="{ name: 'Home' }" style="cursor: default">
+                <b-navbar-item tag="router-link" id="logo" :to="{ name: 'Home' }">
                     <img src="../assets/logo.svg" alt="Лого" width="50px" style="max-height:80% ;">
                 </b-navbar-item>
             </template>
@@ -83,7 +83,7 @@ export default {
             localStorage.removeItem('user.role')
             this.$store.commit('removeToken')
 
-            this.$router.push('/log-in')
+            this.$router.push('/welcome')
 
 
         }

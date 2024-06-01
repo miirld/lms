@@ -94,7 +94,7 @@ export default {
 
             this.$store.commit('removeToken')
 
-            this.$router.push('/log-in')
+            this.$router.push('/welcome')
             console.log('Выполнено')
 
 
