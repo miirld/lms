@@ -45,15 +45,15 @@ class StudyGroup(models.Model):
         School, related_name='study_groups', verbose_name='Школа', null=True, on_delete=models.SET_NULL)
     entrance_year = models.IntegerField(
         verbose_name='Год поступления', validators=[validate_year])
-    graduation_yeaer = models.IntegerField(
+    graduation_year = models.IntegerField(
         verbose_name='Год выпуска', validators=[validate_year])
     is_active = models.BooleanField(verbose_name='Активен', default=False)
 
     def __str__(self):
-        return f"{self.grade}{self.letter} ({self.entrance_year}-{self.graduation_yeaer}) {self.school.short_name}"
+        return f"{self.grade}{self.letter} ({self.entrance_year}-{self.graduation_year}) {self.school.short_name}"
 
     class Meta:
         unique_together = ('grade', 'letter', 'school',
-                           'entrance_year', 'graduation_yeaer')
+                           'entrance_year', 'graduation_year')
         verbose_name = 'Класс'
         verbose_name_plural = 'Классы'

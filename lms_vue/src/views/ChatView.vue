@@ -41,11 +41,20 @@
                                                                 <img class="is-rounded" :src="user.get_image" />
                                                             </figure>
                                                         </div>
-                                                        <div class="column py-5">
+                                                        <div class="column">
                                                             <p>
                                                                 <strong><text-clamp
                                                                         :text="user.last_name + ' ' + user.first_name + ' ' + user.patronymic"
                                                                         :max-height="20" auto-resize /></strong>
+                                                            </p>
+                                                            <p v-if="user.study_groups">
+                                                                <small><text-clamp
+                                                                        :text="school(user)"
+                                                                        :max-height="20" auto-resize /></small>
+                                                            </p>
+                                                            <p>
+                                                                <small><text-clamp :text="toRolePlusGroup(user)"
+                                                                        :max-height="20" auto-resize /></small>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -240,6 +249,27 @@ export default {
         window.removeEventListener('resize', this.onResize)
     },
     methods: {
+        toRolePlusGroup(user) {
+            let role = ''
+            if (user.role) {
+                role = user.role == 'student' ? 'Ученик' : (user.role == 'teacher' ? 'Учитель' : 'Куратор')
+            }
+            let groups = ''
+            if (user.study_groups.length !== 0){
+            for (let group in user.study_groups) {
+                groups += user.study_groups[group].grade + user.study_groups[group].letter + ' '
+            }
+        }
+            return role + ' ' + groups
+        },
+        school(user) {
+            let school = ''
+            if (user.study_groups.length !== 0){
+                school = user.study_groups[0].school.short_name
+        }
+            return school
+        },
+
         searchReset() {
             this.search = ''
             this.getInterlocutors()

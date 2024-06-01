@@ -1,5 +1,6 @@
 <template>
     <aside class="menu mb-5">
+        <p class="menu-label">{{ course.title }}</p>
         <template v-for="chapter in chapters" :key="chapter.id">
             <ul class="menu-list">
                 <li>
@@ -34,7 +35,7 @@
 
 export default {
     name: 'CourseMenu',
-    props: ['chapters'],
+    props: ['chapters', 'course',],
     data(){
         return {
             activeLessonId: null,

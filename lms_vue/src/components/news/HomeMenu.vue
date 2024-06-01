@@ -1,6 +1,6 @@
 <template>
     <aside class="menu">
-        <p class="menu-label"><b>Тип</b></p>
+        <p class="menu-label"><b>Категории</b></p>
         <ul class="menu-list">
             <li>
                 <a>

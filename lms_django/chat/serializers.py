@@ -1,17 +1,23 @@
 from rest_framework import serializers
-
-from .models import Conversation, ConversationMessage
-
 from django.contrib.auth import get_user_model
 
+from .models import Conversation, ConversationMessage
+from study_groups.models import StudyGroup
+from study_groups.serializers import SchoolSerializer
 
 
+class ConversationStudyGroupSerializer(serializers.ModelSerializer):
+    school = SchoolSerializer(many=False)
+    class Meta:
+        model = StudyGroup
+        fields = ('id','grade', 'letter', 'school' )
 
 
 class ConversationUserSerializer(serializers.ModelSerializer):
+    study_groups = ConversationStudyGroupSerializer(many=True)
     class Meta:
         model = get_user_model()
-        fields = ('id', 'first_name', 'last_name', 'patronymic', 'get_image')
+        fields = ('id', 'first_name', 'last_name', 'patronymic', 'get_image', 'role', 'study_groups')
 
 
 

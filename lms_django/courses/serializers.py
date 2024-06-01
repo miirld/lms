@@ -46,7 +46,7 @@ class CourseMenuSerializer(serializers.ModelSerializer):
 
 class PublishedLessonMenuSerializer(serializers.ListSerializer):
     def to_representation(self, data):
-        data = data.filter(status=Lesson.PUBLISHED)
+        data = data.filter(status=Lesson.PUBLISHED).order_by('list_order')
         return super( PublishedLessonMenuSerializer, self).to_representation(data)
 
 class LessonMenuSerializer(serializers.ModelSerializer):

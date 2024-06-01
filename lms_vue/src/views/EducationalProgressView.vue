@@ -11,12 +11,12 @@
                     <div class="column is-10 mx-2">
                         <div class="columns is-multiline">
                             <div class="column is-12 is-size-4">
-                                <div class="container">Курсы</div>
+                                <div class="container">Успеваемость</div>
                             </div>
                             <div class="column is-12">
                                 <template v-if="totalCourses !== 0">
                                     <template v-for=" course in courses" v-bind:key="course.id">
-                                        <CourseItem class="mb-5" :course="course" />
+                                        <ProgressItem class="mb-5" :course="course" />
                                     </template>
                                 </template>
                                 <template v-else>
@@ -52,7 +52,7 @@
 
 <script>
 import axios from 'axios'
-import CourseItem from '@/components/activities/ActivityItem'
+import ProgressItem from '@/components/progress/ProgressItem'
 import CoursesMenu from '@/components/courses/CoursesMenu'
 import CoursesPagination from '@/components/courses/CoursesPagination'
 
@@ -73,13 +73,13 @@ export default {
     },
 
     components: {
-        CourseItem,
+        ProgressItem,
         CoursesMenu,
         CoursesPagination
     },
 
     async mounted() {
-        document.title = 'Курсы | Роснефть класс'
+        document.title = 'Успеваемость | Роснефть класс'
         this.loadFirstCourses()
     },
 
@@ -111,7 +111,7 @@ export default {
             this.isPreviousExists = false
             this.isLoading = true
             await axios
-                .get('/activities/', {
+                .get('/activities/progress/', {
                     params: {
                         page: this.currentPage,
                         category_id: this.activeCategoryId

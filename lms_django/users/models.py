@@ -20,7 +20,7 @@ class CustomUser(AbstractUser):
     avatar = models.ImageField(
         upload_to='users', blank=True, null=True, verbose_name='Аватар')
     role = models.CharField(
-        max_length=25, choices=ROLE_CHOICES, verbose_name='Роль')
+        max_length=25, choices=ROLE_CHOICES, verbose_name='Роль', null=True, blank=True)
     study_groups = models.ManyToManyField(
         StudyGroup, related_name='members', verbose_name='Класс', blank=True)
 

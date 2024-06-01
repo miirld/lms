@@ -9,7 +9,8 @@ import Messages from "../views/MessagesView.vue";
 import AddActivity from "../views/AddActivityView.vue";
 import Activities from "../views/ActivitiesView.vue";
 import ActiveCourse from "../views/ActiveCourseView.vue";
-
+import EducationalProgress from "../views/EducationalProgressView.vue"
+import CourseProgress from "../views/CourseProgressView.vue"
 const routes = [
 	{
 		path: "/",
@@ -22,14 +23,35 @@ const routes = [
 		component: MyAccount,
 	},
 	{
+		path: "/edu-progress",
+		name: "EducationalProgress",
+		component: EducationalProgress,
+		beforeEnter: (to, from) => {
+			if (localStorage.getItem("user.role") == 'student') {
+				return { name: "Home" };
+			}
+		},
+	},
+	{
 		path: "/courses",
 		name: "Courses",
 		component: Courses,
+		beforeEnter: (to, from) => {
+			if (localStorage.getItem("user.role") == 'student') {
+				return { name: "Activities" };
+			}
+		},
 	},
 	{
 		path: "/activities",
 		name: "Activities",
 		component: Activities,
+		beforeEnter: (to, from) => {
+			let role = localStorage.getItem("user.role");
+			if (role == 'teacher' || role == 'tutor') {
+				return { name: "Courses" };
+			}
+		},
 	},
 	{
 		path: "/chat",
@@ -42,16 +64,11 @@ const routes = [
 		component: Messages,
 	},
 	{
-		path: "/activities",
-		name: "Activities",
-		component: Activities,
-	},
-	{
 		path: "/add-activity",
 		name: "AddActivity",
 		component: AddActivity,
 		beforeEnter: (to, from) => {
-			if (localStorage.getItem("user.role")!=='teacher') {
+			if (localStorage.getItem("user.role") == 'student') {
 				return { name: "Home" };
 			}
 		},
@@ -70,13 +87,34 @@ const routes = [
 		path: "/courses/:id",
 		name: "Course",
 		component: Course,
+		beforeEnter: (to, from) => {
+			if (localStorage.getItem("user.role") == 'student') {
+				return { name: "Activities" };
+			}
+		},
+	},
+	{
+		path: "/course/:id/progress",
+		name: "CourseProgress",
+		component: CourseProgress,
+		beforeEnter: (to, from) => {
+			if (localStorage.getItem("user.role") == 'student') {
+				return { name: "Activities" };
+			}
+		},
 	},
 	{
 		path: "/activities/:id",
 		name: "ActiveCourse",
 		component: ActiveCourse,
+		beforeEnter: (to, from) => {
+			let role = localStorage.getItem("user.role");
+			if (role == 'teacher' || role == 'tutor') {
+				return { name: "Courses" };
+			}
+		},
 	},
-	
+
 ];
 
 const router = createRouter({

@@ -19,6 +19,17 @@ from rest_framework.decorators import api_view
 
 from rest_framework.response import Response
 
+from django.contrib.auth import get_user_model
+from chat.serializers import ConversationUserSerializer
+
+
+@api_view(['GET'])
+def account (request):
+    user = get_user_model().objects.get(id=request.user.id)
+    serializer = ConversationUserSerializer(user, many=False)
+    return Response(serializer.data)
+
+
 @api_view(['GET'])
 def me (request):
     return Response ({

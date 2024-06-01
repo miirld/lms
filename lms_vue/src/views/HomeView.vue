@@ -53,6 +53,9 @@ import Trigger from '@/components/news/Trigger'
 import ArticleItem from '@/components/news/ArticleItem'
 import HomeMenu from '@/components/news/HomeMenu.vue'
 
+import { useRoute } from 'vue-router'
+
+
 export default {
     name: 'HomeView',
 
@@ -77,6 +80,7 @@ export default {
     mounted() {
         document.title = 'Главная страница | Роснефть класс'
         this.loadFirstCourses()
+        
     },
 
     methods: {

@@ -8,7 +8,7 @@
                  {{ course.title }}</h4>
             <div class="columns">
                 <div class="column is-4">
-                    <p><small><b>Преподаватель:</b> {{ course.created_by.first_name }} {{ course.created_by.last_name }}
+                    <p><small><b>Автор:</b> {{ course.created_by.first_name }} {{ course.created_by.last_name }}
                         {{ course.created_by.patronymic }}</small></p>
 
                     <p><small><b>Категории:</b> <span v-for="category in course.categories" :key="category.id">{{ category.title }}&nbsp </span> </small></p>
@@ -23,8 +23,7 @@
         </div>
 
         <footer class="card-footer">
-            <router-link class="card-footer-item" :to="{ name: 'Course', params: { id: course.id } }">Продолжить</router-link>
-            
+            <router-link class="card-footer-item" :to="{ name: 'Course', params: { id: course.id } }">Смотреть</router-link>
             
         </footer>
 

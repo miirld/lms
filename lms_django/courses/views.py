@@ -30,7 +30,7 @@ class CoursesPageNumberPagination(PageNumberPagination):
 @api_view(['GET'])
 def get_courses(request):
     category_id = request.GET.get('category_id', '')
-    courses = Course.objects.all()
+    courses = Course.objects.filter(status=Course.PUBLISHED)
     if category_id:
         courses = courses.filter(categories__in=[int(category_id)])
     courses = courses.order_by('-created_at')
@@ -52,7 +52,7 @@ def get_categories(request):
 def get_course(request, id):
     course = Course.objects.get(id=id)
     course_serializer = CourseMenuSerializer(course)
-    chapter_serializer = ChapterMenuSerializer(course.chapters.all(), many=True)
+    chapter_serializer = ChapterMenuSerializer(course.chapters.all().order_by('list_order'), many=True)
 
     return Response({
         'course': course_serializer.data,
@@ -64,6 +64,7 @@ def get_course(request, id):
 def get_quiz(request, lesson_id):
     lesson = Lesson.objects.get(id=lesson_id)
     quiz = lesson.quizzes.first()
+    print(quiz)
     serializer = QuizSerializer(quiz)
     return Response(serializer.data)
 

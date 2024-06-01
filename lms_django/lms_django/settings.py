@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
     'corsheaders',
+    'django_extensions',
     'users.apps.UsersConfig',
     'news.apps.NewsConfig',
     'study_groups.apps.StudyGroupsConfig',
@@ -173,4 +174,9 @@ REST_KNOX = {
     'TOKEN_LIMIT_PER_USER': None, # By default, this option is disabled and set to None -- thus no limit.
     'AUTO_REFRESH': False, # This defines if the token expiry time is extended by TOKEN_TTL each time the token is used.
     'EXPIRY_DATETIME_FORMAT': api_settings.DATETIME_FORMAT,
+}
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
 }

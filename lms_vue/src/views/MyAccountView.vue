@@ -1,15 +1,32 @@
 <template>
     <div class="account">
-        <div class="hero is-primary">
-            <div class="hero-body has-text-centered">
-                <h1 class="title">Личный кабинет</h1>
-            </div>
+        <div class="container">
+            <section class="section">
+                <h3 class="title is-3">О пользователе</h3>
+                <div class="box">
+                    <div class="content">
+                        <div class="columns is-mobile">
+                            <div class="column is-narrow pr-0">
+                                <figure class="image is-48x48 mx-0">
+                                    <img class="is-rounded" :src="user.get_image" />
+                                </figure>
+                            </div>
+                            <div class="column">
+                                <p>
+                                    <strong>{{ user.first_name }} {{ user.last_name }} {{ user.patronymic }}</strong>
+                                    <br />
+                                    <small>{{ role }}</small>
+                                </p>
+                            </div>
+                        </div>
+                        <p><strong>Школа: </strong> {{ school }}</p>
+                        <p><strong>Класс: </strong> {{ study_groups() }}
+                        </p>
+                    </div>
+                    <button @click="logout" class="button is-danger">Выйти</button>
+                </div>
+            </section>
         </div>
-
-        <section class="section">
-            <button @click="logout" class="button is-danger">Выйти</button>
-        </section>
-
     </div>
 </template>
 
@@ -18,11 +35,47 @@ import axios from 'axios'
 
 export default {
     name: 'MyAccountView',
+    data() {
+        return {
+            user: { study_groups: [{ school: {} },] }
+        }
+    },
     mounted() {
+        axios
+            .get('/auth/account')
+            .then(response => {
+                console.log(response.data)
+                this.user = response.data
+            })
+            .catch(error => {
+                console.log(error)
+            })
         document.title = 'Личный кабинет | Роснефть класс'
     },
 
+    computed: {
+        school() {
+            return this.user.study_groups.length !== 0 ? this.user.study_groups[0].school.short_name : '-'
+        },
+        role() {
+            return this.user.role == 'student' ? 'Ученик' : (this.user.role == 'teacher' ? 'Учитель' : (this.user.role == 'tutor' ? 'Куратор' : ''))
+        },
+    },
+
     methods: {
+        study_groups() {
+            let groups = ''
+            if (this.user.study_groups.length !== 0) {
+                for (let group in this.user.study_groups) {
+                    groups += this.user.study_groups[group].grade + this.user.study_groups[group].letter + ' '
+                }
+            }
+            else {
+                groups = '-'
+            }
+            return groups
+        },
+
         async logout() {
             console.log('Выход')
 

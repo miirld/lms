@@ -2,6 +2,19 @@ from django.contrib import admin
 
 from .models import *
 
-admin.site.register(StudyGroup )
+class StudyGroupInline (admin.StackedInline):
+    model = StudyGroup
+    show_change_link = True
+    extra = 1
 
-admin.site.register(School)
+class SchoolAdmin (admin.ModelAdmin):
+    list_display = ['id','short_name', 'address']
+    list_display_links = ['id', 'short_name']
+    inlines = [StudyGroupInline, ]
+
+class StudyGroupAdmin (admin.ModelAdmin):
+    list_display = ['id', 'grade', 'letter', 'school', 'entrance_year', 'graduation_year', 'is_active']
+
+admin.site.register(StudyGroup, StudyGroupAdmin)
+
+admin.site.register(School, SchoolAdmin)

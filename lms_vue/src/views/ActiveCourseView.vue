@@ -7,7 +7,7 @@
                                 icon="dots-horizontal">
                             </b-icon></button></div>
                     <div class="column scrollable is-3 pl-2" v-if="!small || show">
-                        <CourseMenu :chapters="chapters" @getLesson="getLesson" />
+                        <CourseMenu :chapters="chapters" :course="course" @getLesson="getLesson" />
                     </div>
                     <div class="column is-9 content">
                         <template v-if="activeLesson">
