@@ -14,7 +14,7 @@
                 <a>
                     <label class="checkbox">
                         <input type="checkbox" value="message" v-model="types" />
-                        Сообщения
+                        Объявления
                     </label>
                 </a>
             </li>

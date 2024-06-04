@@ -1,8 +1,18 @@
 <template>
     <div class="login">
-        <div class="hero is-primary">
+        <header>
+            <b-navbar class="is-primary has-text-weight-semibold" :mobile-burger="false">
+                <template #brand>
+                    <b-navbar-item tag="router-link"  id="logo" :to="{ name: 'Welcome' }">
+                        <img src="../assets/logo.svg"  alt="Лого" width="50px" style="max-height:57.53px ;">
+                        <p class="is-size-5 pt-5 mt-4">Роснефть-классы</p>
+                    </b-navbar-item>
+                </template>
+            </b-navbar>
+        </header>
+        <div class="hero is-small pt-6">
             <div class="hero-body has-text-centered">
-                <h1 class="title">Авторизация</h1>
+                <h1 class="title">Вход на платформу</h1>
             </div>
         </div>
         <section class="section">
@@ -95,7 +105,7 @@ export default {
                 }
 
                 await axios
-                    .post('/auth/login/', formData)
+                    .post('/users/login/', formData)
                     .then(response => {
                         const token = response.data.token
                         this.$store.commit('setToken', token)
@@ -115,7 +125,7 @@ export default {
                     })
 
                 await axios
-                    .get('/auth/me')
+                    .get('/users/me')
                     .then(response => {
                         this.$store.commit('setUserInfo', response.data)
                         localStorage.setItem('user.id', response.data.id)

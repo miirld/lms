@@ -89,7 +89,7 @@ export default {
         const id = this.$route.params.id
         this.loadFirstCourses()
         await axios
-            .get(`activities/course-progress/${id}/`)
+            .get(`activities/group-progress/${id}/get-data/`)
             .then(response => {
                 console.log(response.data)
                 this.group = response.data

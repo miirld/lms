@@ -11,7 +11,7 @@
                 <template #end>
                     <b-navbar-item tag="div">
                         <div class="buttons pt-5 mt-4">
-                            <router-link class="button is-primary " :to="{ name: 'Login' }">Войти</router-link>
+                            <router-link class="button mb-0 is-primary " :to="{ name: 'Login' }">Войти</router-link>
                         </div>
                     </b-navbar-item>
                 </template>

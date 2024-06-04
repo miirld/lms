@@ -52,13 +52,14 @@ INSTALLED_APPS = [
     'knox',
     'corsheaders',
     'django_extensions',
+    'drf_spectacular',
     'users.apps.UsersConfig',
     'news.apps.NewsConfig',
     'study_groups.apps.StudyGroupsConfig',
     'courses.apps.CoursesConfig',
     'activities.apps.ActivitiesConfig',
     'chat.apps.ChatConfig',
-    
+
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -66,7 +67,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8081",
     "http://192.168.0.11:8081",
-   
+
 ]
 
 MIDDLEWARE = [
@@ -160,23 +161,31 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DATETIME_FORMAT': '%d.%m.%Y %H:%M',
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'knox.auth.TokenAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 
 REST_KNOX = {
-    'SECURE_HASH_ALGORITHM':'cryptography.hazmat.primitives.hashes.SHA512',
-    'AUTH_TOKEN_CHARACTER_LENGTH': 64, # By default, it is set to 64 characters (this shouldn't need changing).
-    'TOKEN_TTL': timedelta(hours=10), # The default is 10 hours i.e., timedelta(hours=10)).
+    'SECURE_HASH_ALGORITHM': 'cryptography.hazmat.primitives.hashes.SHA512',
+    # By default, it is set to 64 characters (this shouldn't need changing).
+    'AUTH_TOKEN_CHARACTER_LENGTH': 64,
+    # The default is 10 hours i.e., timedelta(hours=10)).
+    'TOKEN_TTL': timedelta(hours=10),
     'USER_SERIALIZER': 'knox.serializers.UserSerializer',
-    'TOKEN_LIMIT_PER_USER': None, # By default, this option is disabled and set to None -- thus no limit.
-    'AUTO_REFRESH': False, # This defines if the token expiry time is extended by TOKEN_TTL each time the token is used.
+    # By default, this option is disabled and set to None -- thus no limit.
+    'TOKEN_LIMIT_PER_USER': None,
+    # This defines if the token expiry time is extended by TOKEN_TTL each time the token is used.
+    'AUTO_REFRESH': False,
     'EXPIRY_DATETIME_FORMAT': api_settings.DATETIME_FORMAT,
 }
 
 GRAPH_MODELS = {
-  'all_applications': True,
-  'group_models': True,
+    'all_applications': True,
+    'group_models': True,
 }

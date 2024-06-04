@@ -81,7 +81,7 @@ export default {
 
     mounted() {
         axios
-            .get('/activities/get-for-assign/')
+            .get('/activities/get-data-to-assign/')
             .then(response => {
                 console.log(response.data)
                 this.form_data = response.data

@@ -21,7 +21,7 @@
                 <b-navbar-item v-if="this.$store.state.user.role == 'student'"
                     :active="this.$route.name == 'Activities'" tag="router-link" :to="{ name: 'Activities' }"
                     :style="{ cursor: this.$route.name == 'Activities' ? 'default' : 'pointer' }">
-                    Курсы
+                    Активности
                 </b-navbar-item>
                 <b-navbar-item v-if="this.$store.state.user.role == 'teacher' || this.$store.state.user.role == 'tutor'"
                     :active="this.$route.name == 'Courses'" tag="router-link" :to="{ name: 'Courses' }"
@@ -71,7 +71,7 @@ export default {
 
 
             await axios
-                .post('/auth/logout/')
+                .post('/users/logout/')
                 .then(response => {
                     console.log('Logged out')
                 })

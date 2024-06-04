@@ -42,7 +42,7 @@ export default {
     },
     mounted() {
         axios
-            .get('/auth/account')
+            .get('/users/account')
             .then(response => {
                 console.log(response.data)
                 this.user = response.data
@@ -81,7 +81,7 @@ export default {
 
 
             await axios
-                .post('/auth/logout/')
+                .post('/users/logout/')
                 .then(response => {
                     console.log('Logged out')
                 })

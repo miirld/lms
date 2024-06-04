@@ -30,30 +30,30 @@ def get_activity_courses(request):
         courses = courses.filter(categories__in=[int(category_id)])
     courses = courses.order_by('-created_at')
     paginator = CoursesPageNumberPagination()
-    paginator.page_size = 4
+    paginator.page_size = 2
     results = paginator.paginate_queryset(courses, request)
     serializer = CourseListSerializer(results, many=True)
     return paginator.get_paginated_response(serializer.data)
 
 
-@api_view(['GET'])
-def get_progress_courses(request):
-    if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
-        category_id = request.GET.get('category_id', '')
-        courses = Course.objects.none()
-        for activity in request.user.created_activities.all():
-            if activity.course not in courses:
-                courses |= Course.objects.filter(id=activity.course.id)
-        if category_id:
-            courses = courses.filter(categories__in=[int(category_id)])
-        courses = courses.order_by('-created_at')
-        paginator = CoursesPageNumberPagination()
-        paginator.page_size = 4
-        results = paginator.paginate_queryset(courses, request)
-        serializer = CourseListSerializer(results, many=True)
-        return paginator.get_paginated_response(serializer.data)
-    else:
-        return Response(status=status.HTTP_403_FORBIDDEN)
+# @api_view(['GET'])
+# def get_progress_courses(request):
+#     if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
+#         category_id = request.GET.get('category_id', '')
+#         courses = Course.objects.none()
+#         for activity in request.user.created_activities.all():
+#             if activity.course not in courses:
+#                 courses |= Course.objects.filter(id=activity.course.id)
+#         if category_id:
+#             courses = courses.filter(categories__in=[int(category_id)])
+#         courses = courses.order_by('-created_at')
+#         paginator = CoursesPageNumberPagination()
+#         paginator.page_size = 4
+#         results = paginator.paginate_queryset(courses, request)
+#         serializer = CourseListSerializer(results, many=True)
+#         return paginator.get_paginated_response(serializer.data)
+#     else:
+#         return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 @api_view(['GET'])
@@ -66,7 +66,7 @@ def get_my_groups(request):
                     study_groups |= StudyGroup.objects.filter(
                         id=study_group.id)
         paginator = CoursesPageNumberPagination()
-        paginator.page_size = 5
+        paginator.page_size = 2
         results = paginator.paginate_queryset(study_groups, request)
         serializer = ProgressStudyGroupSerializer(results, many=True)
         return paginator.get_paginated_response(serializer.data)
@@ -74,29 +74,29 @@ def get_my_groups(request):
         return Response(status=status.HTTP_403_FORBIDDEN)
 
 
-@api_view(['GET'])
-def get_progress(request, course_id):
-    if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
-        study_groups = StudyGroup.objects.none()
-        for activity in request.user.created_activities.all():
-            for study_group in activity.participant.study_groups.all():
-                if study_group not in study_groups and activity.lesson.course.id == course_id:
-                    study_groups |= StudyGroup.objects.filter(
-                        id=study_group.id)
-        paginator = CoursesPageNumberPagination()
-        paginator.page_size = 5
-        results = paginator.paginate_queryset(study_groups, request)
-        serializer = ProgressStudyGroupSerializer(results, many=True)
-        for study_group in serializer.data:
-            for member in study_group['members']:
-                activities = Activity.objects.filter(participant__id=member['id'], course__id=course_id).order_by(
-                    "lesson__chapter__list_order", "lesson__list_order", )
-                serializer_activities = ProgressActivitySerializer(
-                    activities, many=True)
-                member['activities'] = serializer_activities.data
-        return paginator.get_paginated_response(serializer.data)
-    else:
-        return Response(status=status.HTTP_403_FORBIDDEN)
+# @api_view(['GET'])
+# def get_progress(request, course_id):
+#     if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
+#         study_groups = StudyGroup.objects.none()
+#         for activity in request.user.created_activities.all():
+#             for study_group in activity.participant.study_groups.all():
+#                 if study_group not in study_groups and activity.lesson.course.id == course_id:
+#                     study_groups |= StudyGroup.objects.filter(
+#                         id=study_group.id)
+#         paginator = CoursesPageNumberPagination()
+#         paginator.page_size = 5
+#         results = paginator.paginate_queryset(study_groups, request)
+#         serializer = ProgressStudyGroupSerializer(results, many=True)
+#         for study_group in serializer.data:
+#             for member in study_group['members']:
+#                 activities = Activity.objects.filter(participant__id=member['id'], course__id=course_id).order_by(
+#                     "lesson__chapter__list_order", "lesson__list_order", )
+#                 serializer_activities = ProgressActivitySerializer(
+#                     activities, many=True)
+#                 member['activities'] = serializer_activities.data
+#         return paginator.get_paginated_response(serializer.data)
+#     else:
+#         return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 @api_view(['GET'])
@@ -108,8 +108,9 @@ def get_my_group_progress(request, group_id):
             if activity.course not in courses and activity.participant in studygroup.members.all():
                 courses |= Course.objects.filter(id=activity.course.id)
         print(courses)
+        courses.order_by('-id')
         paginator = CoursesPageNumberPagination()
-        paginator.page_size = 5
+        paginator.page_size = 2
         results = paginator.paginate_queryset(courses, request)
         serializer_course = ProgressCourseSerializer(results, many=True)
         for course in serializer_course.data:
