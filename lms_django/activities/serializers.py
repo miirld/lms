@@ -8,6 +8,21 @@ from study_groups.models import StudyGroup, School
 from django.contrib.auth import get_user_model
 
 
+
+
+class LessonMenuSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lesson
+        fields = ('id', 'title')
+
+
+class ChapterMenuSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chapter
+        fields = ('id', 'title')
+
+
+
 class ActiveLessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity

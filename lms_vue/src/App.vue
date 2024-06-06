@@ -1,8 +1,9 @@
 <template>
   <div class="page-wrapper">
     <AltNav v-if="$store.state.user.isAuthenticated" />
+    <Nav v-if="!$store.state.user.isAuthenticated" />
     <router-view class="content-wrapper" />
-    <Footer v-if="$store.state.user.isAuthenticated" />
+    <Footer/>
   </div>
 </template>
 
@@ -91,13 +92,16 @@ $link-focus-border: $primary;
 import Footer from '@/components/Footer'
 import axios from 'axios'
 import AltNav from '@/components/AltNav.vue';
+import Nav from '@/components/Nav.vue';
+import { isNavigationFailure } from 'vue-router';
 
 
 export default {
   name: 'App',
   components: {
     Footer,
-    AltNav
+    AltNav,
+    Nav
   },
   beforeCreate() {
     console.log('Инициализация')

@@ -14,9 +14,30 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 
 from courses.views import CoursesPageNumberPagination
-from courses.serializers import CourseListSerializer
+from courses.serializers import CourseListSerializer, CourseMenuSerializer
 
 from .serializers import *
+
+
+
+@api_view(['GET'])
+def get_active_course(request, id):
+    course = Course.objects.get(id=id)
+    activities = Activity.objects.filter(participant=request.user, course=course )
+    lessons = Lesson.objects.filter (activities__in = activities).distinct()
+    chapters = Chapter.objects.filter(lessons__in = lessons).distinct().order_by('list_order')
+    chapters_serializer = ChapterMenuSerializer(chapters, many=True)
+    for chapter in chapters_serializer.data:
+        lessons_serializer = LessonMenuSerializer(lessons.filter(chapter=chapter['id']).order_by('list_order'), many=True)
+        chapter['lessons'] = lessons_serializer.data
+    print(chapters_serializer.data)
+    course_serializer = CourseMenuSerializer(course)
+
+
+    return Response({
+        'course': course_serializer.data,
+        'chapters': chapters_serializer.data
+    })
 
 
 @api_view(['GET'])

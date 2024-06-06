@@ -6,6 +6,7 @@ class LessonInline(admin.StackedInline):
     model = Lesson
     show_change_link = True
     extra = 1
+    ordering=('chapter__list_order', 'list_order')
 
 class QuizInline(admin.StackedInline):
     model = Quiz

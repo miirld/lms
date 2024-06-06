@@ -4,7 +4,7 @@
             <div class="container">
                 <div class="columns">
                     <div class="column" v-if="small"><button class="button is-primary mb-3" @click="setShow"><b-icon
-                                icon="dots-horizontal">
+                        :icon="show? 'close' : 'dots-horizontal'">
                             </b-icon></button></div>
                     <div class="column is-3 pl-2" v-if="!small || show">
                         <div class="columns is-multiline">
@@ -32,9 +32,9 @@
                                 <aside class="menu">
                                     <ul class="menu-list">
                                         <template v-for="user in interlocutors" :key="user.id">
-                                            <li @click="setActiveConversation(user.id)">
+                                            <li @click="setActiveInterluctor(user.id)">
                                                 <a
-                                                    :title="user.last_name + ' ' + user.first_name + ' ' + user.patronymic">
+                                                    :title="user.last_name + ' ' + user.first_name + ' ' + user.patronymic" :class="{'is-active': user.id == activeInterluctor}">
                                                     <div class="columns is-mobile">
                                                         <div class="column is-narrow pr-0">
                                                             <figure class="image is-48x48 mx-0">
@@ -230,7 +230,8 @@ export default {
     data() {
         return {
             interlocutors: [],
-            activeConversation: '',
+            activeInterluctor: '',
+            activeConversation: {},
             body: '',
             search: '',
             small: false,
@@ -292,15 +293,16 @@ export default {
             }
         },
 
-        setActiveConversation(interlocutor_id) {
-            this.activeConversation = interlocutor_id
+        setActiveInterluctor(interlocutor_id) {
+            this.activeInterluctor = interlocutor_id
             this.getConversation()
         },
 
         getConversation() {
             axios
-                .get(`/chat/${this.activeConversation}`)
+                .get(`/chat/${this.activeInterluctor}`)
                 .then(response => {
+                    console.log(response.data)
                     this.activeConversation = response.data
                 })
                 .catch(error => {
@@ -320,7 +322,7 @@ export default {
         },
 
         async submitForm() {
-            if (this.body && this.activeConversation) {
+            if (this.body && this.activeConversation.length !==0) {
                 await axios
                     .post(`/chat/${this.activeConversation.id}/send/`, {
                         body: this.body

@@ -4,7 +4,7 @@
             <div class="container">
                 <div class="columns">
                     <div class="column" v-if="small"><button class="button is-primary mb-3" @click="setShow"><b-icon
-                                icon="dots-horizontal">
+                                :icon="show ? 'close' : 'dots-horizontal'">
                             </b-icon></button></div>
                     <div class="column scrollable is-3 pl-2" v-if="!small || show">
                         <CourseMenu :chapters="chapters" :course="course" @getLesson="getLesson" />
@@ -92,9 +92,8 @@ export default {
         const id = this.$route.params.id
 
         await axios
-            .get(`/courses/${id}/`)
+            .get(`/activities/${id}/`)
             .then(response => {
-                console.log(response.data)
                 this.course = response.data.course
                 this.chapters = response.data.chapters
             })

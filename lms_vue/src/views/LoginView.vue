@@ -1,15 +1,5 @@
 <template>
     <div class="login">
-        <header>
-            <b-navbar class="is-primary has-text-weight-semibold" :mobile-burger="false">
-                <template #brand>
-                    <b-navbar-item tag="router-link"  id="logo" :to="{ name: 'Welcome' }">
-                        <img src="../assets/logo.svg"  alt="Лого" width="50px" style="max-height:57.53px ;">
-                        <p class="is-size-5 pt-5 mt-4">Роснефть-классы</p>
-                    </b-navbar-item>
-                </template>
-            </b-navbar>
-        </header>
         <div class="hero is-small pt-6">
             <div class="hero-body has-text-centered">
                 <h1 class="title">Вход на платформу</h1>

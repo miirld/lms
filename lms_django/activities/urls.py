@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.get_activity_courses, name='get_activity_courses'),
+    path('<int:id>/', views.get_active_course),
     # path('progress/', views.get_progress_courses, name='get_progress_courses'),
     path('my-groups/', views.get_my_groups, name='get_my_groups'),
     path('group-progress/<int:group_id>/get-data/', views.get_group_name, name='get_group_name'),

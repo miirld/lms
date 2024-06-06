@@ -11,7 +11,7 @@
                     <div class="column is-10 mx-2">
                         <div class="columns is-multiline">
                             <div class="column is-12 is-size-4">
-                                <div class="container">Курсы</div>
+                                <div class="container">Активности</div>
                             </div>
                             <div class="column is-12">
                                 <template v-if="totalCourses !== 0">
@@ -20,7 +20,7 @@
                                     </template>
                                 </template>
                                 <template v-else>
-                                    <h3 class="subtitle is-3 has-text-grey">Курсов нет</h3>
+                                    <h3 class="subtitle is-3 has-text-grey">Активностей нет</h3>
                                 </template>
                             </div>
 
