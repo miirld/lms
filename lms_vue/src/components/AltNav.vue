@@ -48,6 +48,7 @@
                 </b-navbar-dropdown>
             </template>
         </b-navbar>
+        <b-loading v-model="isLoading" :is-full-page="true"></b-loading>
     </header>
 </template>
 
@@ -65,25 +66,34 @@ import { useRoute } from 'vue-router'
 const loaction = useRoute();
 export default {
     name: 'Nav',
+    data() {
+        return {
+            isLoading: false,
+        }
+    },
     methods: {
         async logout() {
             console.log('Выход')
-
+             
+            this.isLoading = true
 
             await axios
                 .post('/users/logout/')
                 .then(response => {
+                    axios.defaults.headers.common['Authorization'] = ''
+                    localStorage.removeItem('token')
+                    localStorage.removeItem('user.id')
+                    localStorage.removeItem('user.role')
+                    this.$store.commit('removeToken')
+
+                    this.$router.push('/welcome')
                     console.log('Logged out')
+
                 })
+                this.isLoading = false
 
 
-            axios.defaults.headers.common['Authorization'] = ''
-            localStorage.removeItem('token')
-            localStorage.removeItem('user.id')
-            localStorage.removeItem('user.role')
-            this.$store.commit('removeToken')
 
-            this.$router.push('/welcome')
 
 
         }

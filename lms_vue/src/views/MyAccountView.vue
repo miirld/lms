@@ -27,6 +27,7 @@
                 </div>
             </section>
         </div>
+        <b-loading v-model="isLoading" :is-full-page="true"></b-loading>
     </div>
 </template>
 
@@ -37,11 +38,14 @@ export default {
     name: 'MyAccountView',
     data() {
         return {
-            user: { study_groups: [{ school: {} },] }
+            user: { study_groups: [{ school: {} },] },
+            isLoading: true,
         }
     },
-    mounted() {
-        axios
+    async mounted() {
+        document.title = 'Личный кабинет | Роснефть класс'
+        this.isLoading = true
+        await axios
             .get('/users/account')
             .then(response => {
                 console.log(response.data)
@@ -50,7 +54,7 @@ export default {
             .catch(error => {
                 console.log(error)
             })
-        document.title = 'Личный кабинет | Роснефть класс'
+        this.isLoading = false
     },
 
     computed: {
@@ -79,22 +83,21 @@ export default {
         async logout() {
             console.log('Выход')
 
-
+            this.isLoading = true
             await axios
                 .post('/users/logout/')
                 .then(response => {
                     console.log('Logged out')
+                    axios.defaults.headers.common['Authorization'] = ''
+                    localStorage.removeItem('token')
+                    localStorage.removeItem('user.id')
+                    localStorage.removeItem('user.role')
+                    this.$store.commit('removeToken')
+                    this.$router.push('/welcome')
                 })
 
+            this.isLoading = false    
 
-            axios.defaults.headers.common['Authorization'] = ''
-            localStorage.removeItem('token')
-            localStorage.removeItem('user.id')
-            localStorage.removeItem('user.role')
-
-            this.$store.commit('removeToken')
-
-            this.$router.push('/welcome')
             console.log('Выполнено')
 
 

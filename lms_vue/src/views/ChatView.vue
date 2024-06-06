@@ -138,6 +138,7 @@
                 </div>
             </div>
         </div>
+        <b-loading v-model="isLoading" :is-full-page="true"></b-loading>
     </div>
 </template>
 
@@ -235,7 +236,8 @@ export default {
             body: '',
             search: '',
             small: false,
-            show: false
+            show: false,
+            isLoading :true,
         }
     },
     mounted() {
@@ -275,9 +277,10 @@ export default {
             this.search = ''
             this.getInterlocutors()
         },
-        searchInterlocutors() {
+        async searchInterlocutors() {
             if (this.search) {
-                axios
+                this.isLoading = true
+                await axios
                     .get('/chat/search', {
                         params: {
                             search: this.search,
@@ -290,6 +293,7 @@ export default {
                     .catch(error => {
                         console.log(error)
                     })
+                this.isLoading = false
             }
         },
 
@@ -298,8 +302,9 @@ export default {
             this.getConversation()
         },
 
-        getConversation() {
-            axios
+        async getConversation() {
+            this.isLoading = true
+            await axios
                 .get(`/chat/${this.activeInterluctor}`)
                 .then(response => {
                     console.log(response.data)
@@ -308,10 +313,12 @@ export default {
                 .catch(error => {
                     console.log(error)
                 })
+            this.isLoading = false
         },
 
-        getInterlocutors() {
-            axios
+        async getInterlocutors() {
+            this.isLoading = true
+            await axios
                 .get('/chat/')
                 .then(response => {
                     this.interlocutors = response.data
@@ -319,6 +326,7 @@ export default {
                 .catch(error => {
                     console.log(error)
                 })
+            this.isLoading = false
         },
 
         async submitForm() {

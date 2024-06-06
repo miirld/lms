@@ -44,7 +44,7 @@
                 </div>
             </div>
         </section>
-
+        <b-loading v-model="isLoading" :is-full-page="true"></b-loading>
     </div>
 </template>
 
@@ -60,6 +60,7 @@ export default {
             username: '',
             password: '',
             errors: [],
+            isLoading: false
         }
     },
     mounted() {
@@ -93,7 +94,7 @@ export default {
                     username: this.username,
                     password: this.password
                 }
-
+                this.isLoading = true
                 await axios
                     .post('/users/login/', formData)
                     .then(response => {
@@ -125,6 +126,7 @@ export default {
                     .catch(error => {
                         console.log(error)
                     })
+                this.isLoading =false
             }
         }
     }

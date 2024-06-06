@@ -67,6 +67,7 @@
             </div>
 
         </div>
+        <b-loading v-model="isLoading" :is-full-page="true"></b-loading>
     </div>
 
 </template>
@@ -80,8 +81,14 @@
 
 export default {
     name: 'Landing',
+    data () {
+        return {
+            isLoading : true,
+        }
+    },
     async mounted() {
         document.title = 'Добро пожаловать' + ' | Роснефть класс'
+        this.isLoading = false
 
     },
 }

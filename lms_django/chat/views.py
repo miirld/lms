@@ -46,7 +46,7 @@ def conversation_detail_get_or_create(request, user_id):
 def search_interlocutors(request):
     search = request.GET.get('search', '')
     users = get_user_model().objects.annotate(full_name=Concat(
-        'first_name', 'last_name', 'patronymic', output_field=CharField())).filter(full_name__contains=search).exclude(id=request.user.id)
+        'first_name', 'last_name', 'patronymic', output_field=CharField())).filter(full_name__icontains=search).exclude(id=request.user.id)
     serializer = ConversationUserSerializer(users, many=True)
     return Response(serializer.data)
 

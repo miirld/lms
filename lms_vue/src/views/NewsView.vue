@@ -1,6 +1,5 @@
 <template>
     <div class="home">
-        <b-loading v-model="isLoading" :is-full-page="true"></b-loading>
         <section class="section">
             <div class="container">
                 <div class="columns">
@@ -28,6 +27,7 @@
                 </div>
             </div>
         </section>
+        <b-loading v-model="isLoading" :is-full-page="true"></b-loading>
     </div>
 </template>
 

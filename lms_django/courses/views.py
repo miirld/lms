@@ -35,7 +35,7 @@ def get_courses(request):
         courses = courses.filter(categories__in=[int(category_id)])
     courses = courses.order_by('-created_at')
     paginator = CoursesPageNumberPagination()
-    paginator.page_size = 4
+    paginator.page_size = 2
     results = paginator.paginate_queryset(courses, request)
     serializer = CourseListSerializer(results, many=True)
     return paginator.get_paginated_response(serializer.data)

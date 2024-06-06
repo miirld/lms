@@ -39,6 +39,7 @@
                 </div>
             </div>
         </section>
+        <b-loading v-model="isLoading" :is-full-page="true"></b-loading>
     </div>
 </template>
 
@@ -92,8 +93,9 @@ export default {
             this.currentPage = n
             this.loadCourses()
         },
-        loadCourses() {
-            axios
+        async loadCourses() {
+            this.isLoading = true
+            await axios
                 .get('/activities/my-groups/', {
                     params: {
                         page: this.currentPage,
@@ -116,6 +118,7 @@ export default {
                 .catch(error => {
                     console.log(error)
                 })
+            this.isLoading = false
         },
     },
 }

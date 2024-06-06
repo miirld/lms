@@ -22,15 +22,19 @@ class CourseAdmin(admin.ModelAdmin):
     list_display_links= ['id', 'clamped_title']
     readonly_fields=['created_at']
     inlines = [LessonInline,]
+    list_filter = ['created_by', 'status']
 
 class ChapterAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'course']
+    list_display = ['id', 'title', 'course', 'list_order']
     list_display_links= ['id', 'title']
+    inlines = [LessonInline,]
+    list_filter = ['course',]
 
 class LessonAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'course', 'chapter', 'status', 'lesson_type' ]
     list_display_links= ['id', 'title']
     inlines = [QuizInline,]
+    list_filter = ['course','chapter', 'status', 'lesson_type']
 
 
 class QuizAdmin(admin.ModelAdmin):

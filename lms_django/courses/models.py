@@ -74,10 +74,13 @@ class Chapter(models.Model):
     title = models.CharField(max_length=255, verbose_name='Название')
     course = models.ForeignKey(
         Course, related_name='chapters', on_delete=models.CASCADE, verbose_name='Курс')
-    list_order = models.PositiveIntegerField(default=0)
+    list_order = models.PositiveIntegerField(default=0, verbose_name='Порядковый номер в курсе')
 
     def __str__(self):
-        return self.title
+        return self.title + ' - ' + self.course.clamped_title
+    
+
+
 
     class Meta:
         unique_together = ('course', 'list_order')
@@ -116,10 +119,10 @@ class Lesson(models.Model):
         max_length=20, choices=CHOICES_LESSON_TYPE, default=ARTICLE, verbose_name='Тип')
     youtube_id = models.CharField(
         max_length=20, blank=True, null=True, verbose_name='Ссылка на видео')
-    list_order = models.PositiveIntegerField(default=0)
+    list_order = models.PositiveIntegerField(default=0, verbose_name='Порядковый номер в главе')
 
     def __str__(self):
-        return self.title
+        return self.title + ' - ' + self.chapter.title + ' - ' + self.course.clamped_title
 
     class Meta:
         unique_together = ('chapter', 'list_order')

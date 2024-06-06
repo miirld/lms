@@ -35,6 +35,7 @@
                 </div>
             </div>
         </div>
+        <b-loading v-model="isLoading" :is-full-page="true"></b-loading>
     </div>
 </template>
 
@@ -76,7 +77,8 @@ export default {
             activeLessonStatus: null,
 
             small: false,
-            show: false
+            show: false,
+            isLoading : true
 
         }
     },
@@ -90,14 +92,16 @@ export default {
     async mounted() {
         console.log('mounted')
         const id = this.$route.params.id
-
+        this.isLoading = true
         await axios
             .get(`/activities/${id}/`)
             .then(response => {
                 this.course = response.data.course
                 this.chapters = response.data.chapters
             })
+        this.isLoading = false
         document.title = this.course.title + ' | Роснефть класс'
+        
 
     },
     created() {
@@ -108,24 +112,29 @@ export default {
         window.removeEventListener('resize', this.onResize)
     },
     methods: {
-        done() {
-            axios
+        async done() {
+            this.isLoading = true
+            await axios
                 .post(`/activities/mark-as-done/${this.activeLesson.id}/`)
                 .then(response => {
                     console.log(response.data)
                     this.activeLessonStatus = response.data.status
                 })
+            this.isLoading = false
         },
 
 
-        getQuiz() {
-            axios
+        async getQuiz() {
+            this.isLoading = true
+            await axios
                 .get(`/courses/lesson/${this.activeLesson.id}/get-quiz/`)
                 .then(response => {
                     this.quiz = response.data
                 })
+            this.isLoading = false
         },
         async getLesson(id) {
+            this.isLoading = true
             await axios
                 .get(`/courses/lesson/${id}/`)
                 .then(response => {
@@ -144,7 +153,6 @@ export default {
                     })
             }
 
-
             else {
 
                 await axios
@@ -153,7 +161,9 @@ export default {
                         this.activeLessonStatus = response.data.status
                     })
                 console.log(this.activeLessonStatus)
+
             }
+            this.isLoading = false
         },
         onResize() {
             this.small = window.innerWidth <= 768;

@@ -13,6 +13,7 @@
                 </b-navbar-item>
             </template>
         </b-navbar>
+        
     </header>
 </template>
 

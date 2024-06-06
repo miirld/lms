@@ -60,6 +60,7 @@
                     </div>
                 </div>
             </section>
+            <b-loading v-model="isLoading" :is-full-page="true"></b-loading>
         </div>
     </div>
 
@@ -79,6 +80,7 @@ export default {
             currentPage: null,
             totalPages: 0,
             totalCourses: null,
+            isLoading: true,
 
         }
     },
@@ -88,6 +90,7 @@ export default {
     async mounted() {
         const id = this.$route.params.id
         this.loadFirstCourses()
+        this.isLoading = true
         await axios
             .get(`activities/group-progress/${id}/get-data/`)
             .then(response => {
@@ -97,6 +100,7 @@ export default {
             .catch(error => {
                 console.log(error)
             })
+        this.isLoading = false
     },
     methods: {
         loadFirstCourses() {
@@ -107,9 +111,10 @@ export default {
             this.currentPage = n
             this.loadCourses()
         },
-        loadCourses() {
+        async loadCourses() {
             const id = this.$route.params.id
-            axios
+            this.isLoading = true
+            await axios
                 .get(`activities/group-progress/${id}/`, {
                     params: {
                         page: this.currentPage,
@@ -132,6 +137,7 @@ export default {
                 .catch(error => {
                     console.log(error)
                 })
+            this.isLoading = false
         }
     }
 }

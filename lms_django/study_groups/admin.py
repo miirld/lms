@@ -14,6 +14,8 @@ class SchoolAdmin (admin.ModelAdmin):
 
 class StudyGroupAdmin (admin.ModelAdmin):
     list_display = ['id', 'grade', 'letter', 'school', 'entrance_year', 'graduation_year', 'is_active']
+    list_display_links = ['id', 'grade', 'letter']
+    list_filter = ['school']
 
 admin.site.register(StudyGroup, StudyGroupAdmin)
 

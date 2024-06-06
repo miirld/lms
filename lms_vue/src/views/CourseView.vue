@@ -29,6 +29,7 @@
                 </div>
             </div>
         </div>
+        <b-loading v-model="isLoading" :is-full-page="true"></b-loading>
     </div>
 </template>
 
@@ -69,7 +70,8 @@ export default {
             activeLesson: null,
 
             small: false,
-            show: false
+            show: false,
+            isLoading :true,
 
         }
     },
@@ -84,6 +86,7 @@ export default {
         console.log('mounted')
         const id = this.$route.params.id
 
+        this.isLoading = true
         await axios
             .get(`/courses/${id}/`)
             .then(response => {
@@ -91,6 +94,7 @@ export default {
                 this.course = response.data.course
                 this.chapters = response.data.chapters
             })
+        this.isLoading = false
         document.title = this.course.title + ' | Роснефть класс'
 
     },
@@ -103,15 +107,18 @@ export default {
     },
     methods: {
 
-        getQuiz() {
-            axios
+        async getQuiz() {
+            this.isLoading = true
+            await axios
                 .get(`/courses/lesson/${this.activeLesson.id}/get-quiz/`)
                 .then(response => {
                     this.quiz = response.data
                 })
+            this.isLoading = false
         },
-        getLesson(id) {
-            axios
+        async getLesson(id) {
+            this.isLoading = true
+            await axios
                 .get(`/courses/lesson/${id}/`)
                 .then(response => {
                     this.activeLesson = response.data
@@ -119,6 +126,7 @@ export default {
                         this.getQuiz()
                     }
                 })
+            this.isLoading = false
         },
         onResize() {
             this.small = window.innerWidth <= 768;
