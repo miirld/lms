@@ -332,8 +332,9 @@ export default {
         async submitForm() {
             if (this.body && this.activeConversation.length !==0) {
                 await axios
-                    .post(`/chat/${this.activeConversation.id}/send/`, {
-                        body: this.body
+                    .post('/chat/send/', {
+                        body: this.body,
+                        conversation_id: this.activeConversation.id
                     })
                     .then(response => {
                         this.activeConversation.messages.push(response.data)

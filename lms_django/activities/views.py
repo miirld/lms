@@ -23,7 +23,7 @@ from .serializers import *
 @api_view(['GET'])
 def get_active_course(request, id):
     course = Course.objects.get(id=id)
-    activities = Activity.objects.filter(participant=request.user, course=course )
+    activities = Activity.objects.filter(participant=request.user, lesson__chapter__course__in=list([course]) )
     lessons = Lesson.objects.filter (activities__in = activities).distinct()
     chapters = Chapter.objects.filter(lessons__in = lessons).distinct().order_by('list_order')
     chapters_serializer = ChapterMenuSerializer(chapters, many=True)
@@ -45,8 +45,8 @@ def get_activity_courses(request):
     category_id = request.GET.get('category_id', '')
     courses = Course.objects.none()
     for activity in request.user.activities.all():
-        if activity.course not in courses:
-            courses |= Course.objects.filter(id=activity.course.id)
+        if activity.lesson.chapter.course not in courses:
+            courses |= Course.objects.filter(id=activity.lesson.chapter.course.id)
     if category_id:
         courses = courses.filter(categories__in=[int(category_id)])
     courses = courses.order_by('-created_at')
@@ -126,8 +126,8 @@ def get_my_group_progress(request, group_id):
         courses = Course.objects.none()
         studygroup = StudyGroup.objects.get(id=group_id)
         for activity in request.user.created_activities.all():
-            if activity.course not in courses and activity.participant in studygroup.members.all():
-                courses |= Course.objects.filter(id=activity.course.id)
+            if activity.lesson.chapter.course not in courses and activity.participant in studygroup.members.all():
+                courses |= Course.objects.filter(id=activity.lesson.chapter.course.id)
         print(courses)
         courses.order_by('-id')
         paginator = CoursesPageNumberPagination()
@@ -138,7 +138,7 @@ def get_my_group_progress(request, group_id):
             course['members'] = ProgressUserSerializer(get_user_model().objects.filter(
                 study_groups__in=[int(group_id)]), many=True).data
             for member in course['members']:
-                activities = Activity.objects.filter(participant__id=member['id'], lesson__course__id=course['id']).order_by(
+                activities = Activity.objects.filter(participant__id=member['id'], lesson__chapter__course__id=course['id']).order_by(
                     "lesson__chapter__list_order", "lesson__list_order", )
                 ser_activities = ProgressActivitySerializer(
                     activities, many=True)
@@ -177,12 +177,11 @@ def assign_activity(request):
             [study_group_id])).filter(role=get_user_model().STUDENT)
         course = Course.objects.get(id=course_id)
         lessons = Lesson.objects.filter(
-            course=course_id, status=Lesson.PUBLISHED)
+            chapter__course=course_id, status=Lesson.PUBLISHED)
 
         for lesson in lessons:
             for user in users:
                 Activity.objects.get_or_create(
-                    course=course,
                     lesson=lesson,
                     status=Activity.STARTED,
                     created_by=request.user,
@@ -211,7 +210,8 @@ def get_lesson_status(request, lesson_id):
 
 
 @api_view(['POST'])
-def mark_as_done(request, lesson_id):
+def mark_as_done(request):
+    lesson_id = request.data.get('lesson_id')
     lesson = Lesson.objects.get(id=lesson_id)
 
     activity = Activity.objects.get(

@@ -42,7 +42,7 @@ class StudyGroup(models.Model):
     letter = models.CharField(
         max_length=1, choices=LETTER_CHOICES, verbose_name='Литера')
     school = models.ForeignKey(
-        School, related_name='study_groups', verbose_name='Школа', null=True, on_delete=models.SET_NULL)
+        School, related_name='study_groups', verbose_name='Школа', on_delete=models.CASCADE)
     entrance_year = models.IntegerField(
         verbose_name='Год поступления', validators=[validate_year])
     graduation_year = models.IntegerField(

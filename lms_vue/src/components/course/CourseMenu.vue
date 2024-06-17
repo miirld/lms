@@ -1,6 +1,6 @@
 <template>
     <aside class="menu mb-5">
-        <p class="menu-label">{{ course.title }}</p>
+        <p class="menu-label"><a @click="setActiveLesson(null)">{{ course.title }}</a></p>
         <template v-for="chapter in chapters" :key="chapter.id">
             <ul class="menu-list">
                 <li>
@@ -30,13 +30,22 @@
     </aside>
 </template>
 
+<style scoped>
+.menu-label a {
+    color: hsl(0, 0%, 48%);
+}
+.menu-label a:hover {
+    color: black;
+}
+</style>
+
 
 <script>
 
 export default {
     name: 'CourseMenu',
     props: ['chapters', 'course',],
-    data(){
+    data() {
         return {
             activeLessonId: null,
         }
@@ -47,7 +56,7 @@ export default {
             this.$emit('getLesson', this.activeLessonId)
         },
     }
-    
+
 }
 
 

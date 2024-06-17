@@ -8,7 +8,7 @@ class Conversation(models.Model):
     users = models.ManyToManyField(
         get_user_model(), related_name='conversations', verbose_name='Участники')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
-    modified_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
+
 
     def modified_at_formatted(self):
         return timesince(self.created_at)
@@ -27,8 +27,7 @@ class ConversationMessage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     created_by = models.ForeignKey(
         get_user_model(), related_name='sent_messages', on_delete=models.CASCADE, verbose_name='От кого')
-    sent_to = models.ForeignKey(
-        get_user_model(), related_name='recieved_messages', on_delete=models.CASCADE, verbose_name='Кому')
+
 
     def created_at_formatted(self):
         return timesince(self.created_at)

@@ -20,6 +20,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+
+admin.site.site_header = '«Роснефть-классы» - администрирование'
+admin.site.site_title = '«Роснефть-классы» - администрирование'
+admin.site.index_title = '«Роснефть-классы» - администрирование'
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/users/', include('users.urls')),

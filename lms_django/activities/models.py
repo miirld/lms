@@ -14,8 +14,7 @@ class Activity(models.Model):
         (STARTED, 'В работе'),
         (DONE, 'Завершена'),
     )
-    course = models.ForeignKey(
-        Course, related_name='activities', on_delete=models.CASCADE, verbose_name='Курс')
+
     lesson = models.ForeignKey(
         Lesson, related_name='activities', on_delete=models.CASCADE , verbose_name='Урок')
     status = models.CharField(

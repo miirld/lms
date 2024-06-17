@@ -63,9 +63,7 @@ def get_course(request, id):
 @api_view(['GET'])
 def get_quiz(request, lesson_id):
     lesson = Lesson.objects.get(id=lesson_id)
-    quiz = lesson.quizzes.first()
-    print(quiz)
-    serializer = QuizSerializer(quiz)
+    serializer = QuizSerializer(lesson.quiz)
     return Response(serializer.data)
 
 

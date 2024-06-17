@@ -41,7 +41,7 @@ class CourseMenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ('id', 'title',
-                  'description')
+                  'description', 'get_image')
 
 
 class PublishedLessonMenuSerializer(serializers.ListSerializer):
@@ -51,7 +51,7 @@ class PublishedLessonMenuSerializer(serializers.ListSerializer):
 
 class LessonMenuSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Chapter
+        model = Lesson
         list_serializer_class=PublishedLessonMenuSerializer
         fields = ('id', 'title')
 
@@ -69,7 +69,7 @@ class ChapterMenuSerializer(serializers.ModelSerializer):
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
-        fields = ('id', 'title', 'content', 'lesson_type',
+        fields = ('id', 'title', 'content', 'lesson_type','get_image',
                   'youtube_id')
 
 
@@ -77,4 +77,4 @@ class QuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
         fields = ('id', 'lesson', 'question',
-                  'answer', 'opt1', 'opt2', 'opt3')
+                  'answer', 'opt1', 'opt2', 'opt3','opt4')

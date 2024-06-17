@@ -14,6 +14,9 @@
                             <h3 class="title is-3">{{ activeLesson.title }}</h3>
                             <hr>
                             <p style="white-space: pre-wrap;">{{ activeLesson.content }}</p>
+                            <figure v-if="activeLesson.get_image" class="image my-0 ml-0" style="max-width: 750px;">
+                                <img :src="activeLesson.get_image">
+                            </figure>
                             <template v-if="activeLesson.lesson_type === 'quiz'">
                                 <Quiz :quiz="quiz" />
                             </template>
@@ -23,7 +26,11 @@
                         </template>
                         <template v-else>
                             <h3 class="title is-3">{{ course.title }}</h3>
+                            <hr>
                             <p style="white-space: pre-wrap;">{{ course.description }}</p>
+                            <figure v-if="course.get_image" class="image my-0 ml-0" style="max-width: 750px;">
+                                <img :src="course.get_image">
+                            </figure>
                         </template>
                     </div>
                 </div>
@@ -71,7 +78,7 @@ export default {
 
             small: false,
             show: false,
-            isLoading :true,
+            isLoading: true,
 
         }
     },
@@ -117,16 +124,21 @@ export default {
             this.isLoading = false
         },
         async getLesson(id) {
-            this.isLoading = true
-            await axios
-                .get(`/courses/lesson/${id}/`)
-                .then(response => {
-                    this.activeLesson = response.data
-                    if (this.activeLesson.lesson_type === 'quiz') {
-                        this.getQuiz()
-                    }
-                })
-            this.isLoading = false
+            if (id === null) {
+                this.activeLesson = null
+            }
+            else {
+                this.isLoading = true
+                await axios
+                    .get(`/courses/lesson/${id}/`)
+                    .then(response => {
+                        this.activeLesson = response.data
+                        if (this.activeLesson.lesson_type === 'quiz') {
+                            this.getQuiz()
+                        }
+                    })
+                this.isLoading = false
+            }
         },
         onResize() {
             this.small = window.innerWidth <= 768;

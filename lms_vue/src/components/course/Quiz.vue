@@ -34,6 +34,12 @@
                         quiz.opt3 }}
                 </label>
             </div>
+            <div class="control">
+                <label class="radio">
+                    <input type="radio" :value="quiz.opt4" v-model="selectedAnswer"> {{
+                        quiz.opt4 }}
+                </label>
+            </div>
             <div class="control mt-4">
                 <button class="button is-primary" @click="submitQuiz">Ответить</button>
             </div>

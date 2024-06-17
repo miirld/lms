@@ -52,18 +52,15 @@ def search_interlocutors(request):
 
 
 @api_view(['POST'])
-def conversation_send_message(request, conversation_id):
+def conversation_send_message(request):
+    conversation_id = request.data.get('conversation_id')
     conversation = Conversation.objects.filter(
         users__in=list([request.user])).get(id=conversation_id)
 
-    for user in conversation.users.all():
-        if user != request.user:
-            sent_to = user
 
     conversation_message = ConversationMessage.objects.create(
         conversation=conversation,
         body=request.data.get('body'),
-        sent_to=sent_to,
         created_by=request.user
     )
 

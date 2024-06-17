@@ -12,10 +12,10 @@
                         <div class="columns is-multiline">
                             <div class="column is-12 is-size-4">
                                 <div class="columns is-mobile">
-                                    <div class="column is-8">
+                                    <div class="column is-6">
                                         <div class="container">Курсы</div>
                                     </div>
-                                    <div class="column is-4 has-text-right" >
+                                    <div class="column is-6 has-text-right" >
                                         <router-link :to="{ name: 'AddActivity' }" v-if="this.$store.state.user.role==='teacher' || this.$store.state.user.role==='tutor'" class="button is-primary">Назначить</router-link>
                                     </div>
                                 </div>

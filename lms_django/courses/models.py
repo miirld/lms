@@ -16,9 +16,6 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
 
 
-
-
-
 class Course(models.Model):
     DRAFT = 'draft'
     PUBLISHED = 'published'
@@ -41,10 +38,16 @@ class Course(models.Model):
         blank=True, null=True, verbose_name='Описание')
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name='Дата создания')
-    image = models.ImageField(
-        upload_to='uploads', blank=True, null=True, verbose_name='Изображение')
     status = models.CharField(
         max_length=25, choices=STATUS_CHOICES, default=DRAFT, verbose_name='Статус')
+    image = models.ImageField(
+        upload_to='courses', blank=True, null=True, verbose_name='Изображение')
+
+    def get_image(self):
+        if self.image:
+            return settings.WEBSITE_URL + self.image.url
+        else:
+            return None
 
     @property
     def clamped_title(self):
@@ -58,29 +61,29 @@ class Course(models.Model):
     def __str__(self):
         return self.clamped_title
 
-    def get_image(self):
-        if self.image:
-            return settings.WEBSITE_URL + self.image.url
-        else:
-            return "https://placehold.co/600x400"
-
     class Meta:
         verbose_name = 'Курс'
         verbose_name_plural = 'Курсы'
 
 
-
 class Chapter(models.Model):
+    DRAFT = 'draft'
+    PUBLISHED = 'published'
+
+    STATUS_CHOICES = (
+        (DRAFT, 'Черновик'),
+        (PUBLISHED, 'Опубликовано'),
+    )
     title = models.CharField(max_length=255, verbose_name='Название')
     course = models.ForeignKey(
         Course, related_name='chapters', on_delete=models.CASCADE, verbose_name='Курс')
-    list_order = models.PositiveIntegerField(default=0, verbose_name='Порядковый номер в курсе')
+    list_order = models.PositiveIntegerField(
+        default=0, verbose_name='Порядковый номер в курсе')
+    status = models.CharField(
+        max_length=25, choices=STATUS_CHOICES, default=DRAFT, verbose_name='Статус')
 
     def __str__(self):
         return self.title + ' - ' + self.course.clamped_title
-    
-
-
 
     class Meta:
         unique_together = ('course', 'list_order')
@@ -108,9 +111,8 @@ class Lesson(models.Model):
 
     )
 
-    course = models.ForeignKey(
-        Course, related_name='lessons', on_delete=models.CASCADE, verbose_name='Курс')
-    chapter = models.ForeignKey (Chapter, related_name='lessons', on_delete=models.CASCADE, verbose_name='Глава')
+    chapter = models.ForeignKey(
+        Chapter, related_name='lessons', on_delete=models.CASCADE, verbose_name='Глава')
     title = models.CharField(max_length=255, verbose_name='Название')
     content = models.TextField(blank=True, null=True, verbose_name='Контент')
     status = models.CharField(
@@ -119,10 +121,19 @@ class Lesson(models.Model):
         max_length=20, choices=CHOICES_LESSON_TYPE, default=ARTICLE, verbose_name='Тип')
     youtube_id = models.CharField(
         max_length=20, blank=True, null=True, verbose_name='Ссылка на видео')
-    list_order = models.PositiveIntegerField(default=0, verbose_name='Порядковый номер в главе')
+    list_order = models.PositiveIntegerField(
+        default=0, verbose_name='Порядковый номер в главе')
+    image = models.ImageField(
+        upload_to='lessons', blank=True, null=True, verbose_name='Изображение')
 
     def __str__(self):
-        return self.title + ' - ' + self.chapter.title + ' - ' + self.course.clamped_title
+        return self.title + ' - ' + self.chapter.title + ' - ' + self.chapter.course.clamped_title
+
+    def get_image(self):
+        if self.image:
+            return settings.WEBSITE_URL + self.image.url
+        else:
+            return None
 
     class Meta:
         unique_together = ('chapter', 'list_order')
@@ -131,8 +142,8 @@ class Lesson(models.Model):
 
 
 class Quiz(models.Model):
-    lesson = models.ForeignKey(
-        Lesson, related_name='quizzes', on_delete=models.CASCADE, verbose_name='Урок')
+    lesson = models.OneToOneField(
+        Lesson, related_name='quiz', on_delete=models.CASCADE, verbose_name='Урок')
     question = models.CharField(
         max_length=255, null=True, verbose_name='Вопрос')
     answer = models.CharField(
@@ -143,6 +154,8 @@ class Quiz(models.Model):
                             verbose_name='Ответ 2')
     opt3 = models.CharField(max_length=255, null=True,
                             verbose_name='Ответ 3')
+    opt4 = models.CharField(max_length=255, null=True,
+                            verbose_name='Ответ 4')
 
     class Meta:
         verbose_name = 'Викторина'
