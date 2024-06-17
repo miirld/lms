@@ -51,7 +51,7 @@ def get_activity_courses(request):
         courses = courses.filter(categories__in=[int(category_id)])
     courses = courses.order_by('-created_at')
     paginator = CoursesPageNumberPagination()
-    paginator.page_size = 2
+    paginator.page_size = 3
     results = paginator.paginate_queryset(courses, request)
     serializer = CourseListSerializer(results, many=True)
     return paginator.get_paginated_response(serializer.data)
@@ -85,9 +85,10 @@ def get_my_groups(request):
             for study_group in activity.participant.study_groups.all():
                 if study_group not in study_groups:
                     study_groups |= StudyGroup.objects.filter(
-                        id=study_group.id)
+                        id=study_group.id,is_active=True)
+
         paginator = CoursesPageNumberPagination()
-        paginator.page_size = 2
+        paginator.page_size = 3
         results = paginator.paginate_queryset(study_groups, request)
         serializer = ProgressStudyGroupSerializer(results, many=True)
         return paginator.get_paginated_response(serializer.data)
@@ -131,7 +132,7 @@ def get_my_group_progress(request, group_id):
         print(courses)
         courses.order_by('-id')
         paginator = CoursesPageNumberPagination()
-        paginator.page_size = 2
+        paginator.page_size = 3
         results = paginator.paginate_queryset(courses, request)
         serializer_course = ProgressCourseSerializer(results, many=True)
         for course in serializer_course.data:
@@ -159,9 +160,9 @@ def get_group_name(request, group_id):
 def get_data_for_activity(request):
     if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
         study_groups = StudyGroup.objects.filter(
-            members__in=([request.user.id]))
+            members__in=([request.user.id]), is_active=True)
         if len(request.user.study_groups.all()) == 0:
-            study_groups = StudyGroup.objects.all()
+            study_groups = StudyGroup.objects.filter(is_active=True)
         study_groups_serializer = StudyGroupSerializer(study_groups, many=True)
         return Response(study_groups_serializer.data)
     else:

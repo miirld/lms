@@ -11,7 +11,7 @@ from knox.views import LoginView as KnoxLoginView
 from knox.auth import TokenAuthentication
 
 # local apps import
-from .serializers import UserSerializer, AuthSerializer
+from .serializers import UserSerializer, AuthSerializer, AccountUserSerializer
 
 from rest_framework.authentication import SessionAuthentication
 
@@ -20,13 +20,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from django.contrib.auth import get_user_model
-from chat.serializers import ConversationUserSerializer
+
 
 
 @api_view(['GET'])
 def account (request):
     user = get_user_model().objects.get(id=request.user.id)
-    serializer = ConversationUserSerializer(user, many=False)
+    serializer = AccountUserSerializer(user, many=False)
     return Response(serializer.data)
 
 

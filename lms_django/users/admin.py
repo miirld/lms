@@ -12,6 +12,6 @@ UserAdmin.fieldsets = tuple(fields)
 
 
 UserAdmin.list_filter = ('role', 'study_groups', 'is_staff', 'is_superuser', 'is_active', 'groups', )
-UserAdmin.list_display = ('username', 'first_name', 'last_name', 'patronymic', 'role', 'is_staff', 'is_superuser' )
+UserAdmin.list_display = ('username', 'first_name', 'last_name', 'patronymic', 'role', 'is_staff', 'is_superuser', 'is_active' )
 UserAdmin.list_display_links = ('username', 'first_name', 'last_name', 'patronymic' )
 admin.site.register(CustomUser, UserAdmin)

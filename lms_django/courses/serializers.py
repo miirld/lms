@@ -5,12 +5,16 @@ from .models import Category, Course, Lesson, Quiz, Chapter
 from django.contrib.auth import get_user_model
 
 
-
+class PublishedAssignCourseSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.filter(status=Chapter.PUBLISHED)
+        return super( PublishedAssignCourseSerializer, self).to_representation(data)
 
 
 class AssignCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
+        list_serializer_class=PublishedAssignCourseSerializer
         fields = ('id', 'clamped_title')
 
 

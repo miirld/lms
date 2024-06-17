@@ -3,7 +3,27 @@ from django.contrib.auth import  authenticate
 
 from rest_framework import serializers
 
+from study_groups.models import StudyGroup, School
 
+
+
+class AccountSchoolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = School
+        fields = ('id','full_name')
+
+class AccountConversationStudyGroupSerializer(serializers.ModelSerializer):
+    school = AccountSchoolSerializer(many=False)
+    class Meta:
+        model = StudyGroup
+        fields = ('id','grade', 'letter', 'school' )
+
+
+class AccountUserSerializer(serializers.ModelSerializer):
+    study_groups = AccountConversationStudyGroupSerializer(many=True)
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'first_name', 'last_name', 'patronymic', 'get_image', 'role', 'study_groups')
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
 
-from .models import Course, Category, Lesson, Quiz
+from .models import Course, Category, Lesson, Quiz, Chapter
 
 
 from .serializers import (CategorySerializer, CourseListSerializer,
@@ -35,7 +35,7 @@ def get_courses(request):
         courses = courses.filter(categories__in=[int(category_id)])
     courses = courses.order_by('-created_at')
     paginator = CoursesPageNumberPagination()
-    paginator.page_size = 2
+    paginator.page_size = 3
     results = paginator.paginate_queryset(courses, request)
     serializer = CourseListSerializer(results, many=True)
     return paginator.get_paginated_response(serializer.data)
@@ -52,7 +52,7 @@ def get_categories(request):
 def get_course(request, id):
     course = Course.objects.get(id=id)
     course_serializer = CourseMenuSerializer(course)
-    chapter_serializer = ChapterMenuSerializer(course.chapters.all().order_by('list_order'), many=True)
+    chapter_serializer = ChapterMenuSerializer(course.chapters.filter(status=Chapter.PUBLISHED).order_by('list_order'), many=True)
 
     return Response({
         'course': course_serializer.data,

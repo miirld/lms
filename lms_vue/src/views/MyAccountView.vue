@@ -59,7 +59,7 @@ export default {
 
     computed: {
         school() {
-            return this.user.study_groups.length !== 0 ? this.user.study_groups[0].school.short_name : '-'
+            return this.user.study_groups.length !== 0 ? this.user.study_groups[0].school.full_name : '-'
         },
         role() {
             return this.user.role == 'student' ? 'Ученик' : (this.user.role == 'teacher' ? 'Учитель' : (this.user.role == 'tutor' ? 'Куратор' : ''))
