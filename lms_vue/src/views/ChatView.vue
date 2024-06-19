@@ -28,7 +28,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="column is-12 scrollable">
+                            <div class="column is-12 scrollable" >
                                 <aside class="menu">
                                     <ul class="menu-list">
                                         <template v-for="user in interlocutors" :key="user.id">
@@ -74,7 +74,7 @@
                                 </p>
                             </div>
                             <div class="p-3 mb-1 chat-wrap box">
-                                <div class="p-5 overflow-chat">
+                                <div class="p-5 overflow-chat" id="test">
                                     <template v-for="message in this.activeConversation.messages">
                                         <template v-if="message.created_by.id == this.$store.state.user.id">
                                             <div class="custom-message">
@@ -226,6 +226,9 @@ input.search:focus {
 
 <script>
 import axios from 'axios'
+
+
+
 export default {
     name: 'chat',
     data() {
@@ -313,6 +316,8 @@ export default {
                 .catch(error => {
                     console.log(error)
                 })
+            const scrollable = document.getElementById('test');
+            scrollable.scrollTop = scrollable.scrollHeight;
             this.isLoading = false
         },
 

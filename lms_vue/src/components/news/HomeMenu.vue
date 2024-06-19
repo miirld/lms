@@ -4,17 +4,17 @@
         <ul class="menu-list">
             <li>
                 <a>
-                    <label class="checkbox ">
-                        <input type="checkbox" value="article" v-model="types" />
-                        Статьи
+                    <label class="checkbox">
+                        <input type="checkbox" value="message" v-model="types" />
+                        Объявления
                     </label>
                 </a>
             </li>
             <li>
                 <a>
-                    <label class="checkbox">
-                        <input type="checkbox" value="message" v-model="types" />
-                        Объявления
+                    <label class="checkbox ">
+                        <input type="checkbox" value="article" v-model="types" />
+                        Статьи
                     </label>
                 </a>
             </li>

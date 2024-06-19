@@ -28,7 +28,7 @@
                     </template>
                     <template v-else>
                         <div class="column is-12">
-                            <h3 class="subtitle is-3 has-text-grey">Вы не назначали активности ни одной группе</h3>
+                            <h3 class="subtitle is-3 has-text-grey">Вы не назначили активности ни одному классу</h3>
                         </div>
                     </template>
                     <div class="column is-12" v-if="groups.length !== 0">

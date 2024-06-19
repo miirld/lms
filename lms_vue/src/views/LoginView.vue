@@ -64,7 +64,7 @@ export default {
         }
     },
     mounted() {
-        document.title = 'Авторизация | Роснефть класс'
+        document.title = 'Вход | Роснефть класс'
 
     },
 

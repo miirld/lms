@@ -79,7 +79,7 @@ export default {
     },
 
     async mounted() {
-        document.title = 'Курсы | Роснефть класс'
+        document.title = 'Активности | Роснефть класс'
         this.loadFirstCourses()
     },
 

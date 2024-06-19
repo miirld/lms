@@ -19,7 +19,7 @@ class News (models.Model):
 
     TYPE_CHOICES = (
         (ARTICLE, 'Статья'),
-        (MESSAGE, 'Сообщение')
+        (MESSAGE, 'Объявление')
     )
 
     created_by = models.ForeignKey(
@@ -35,18 +35,6 @@ class News (models.Model):
     image = models.ImageField(
         upload_to='news', blank=True, null=True, verbose_name='Изображение')
 
-
-    @property
-    def clamped_content(self):
-        if len(self.content)>100:
-            return self.content[0:100] + '...'
-        else:
-            return self.content
-
-    
-    clamped_content.fget.short_description = 'Текст'
-    
-
     def __str__(self):
         return self.clamped_content
 
@@ -59,3 +47,18 @@ class News (models.Model):
     class Meta:
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
+
+
+
+    @property
+    def clamped_content(self):
+        if len(self.content)>100:
+            return self.content[0:100] + '...'
+        else:
+            return self.content
+
+    
+    clamped_content.fget.short_description = 'Текст'
+    
+
+

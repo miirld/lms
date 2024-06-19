@@ -11,7 +11,6 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 class StudyGroupSerializer(serializers.ModelSerializer):
     school = SchoolSerializer(many=False)
-    courses = AssignCourseSerializer(many=True)
     class Meta:
         model = StudyGroup
-        fields= ('id', 'grade', 'letter', 'school', 'courses' )
+        fields= ('id', 'grade', 'letter', 'school')

@@ -7,13 +7,13 @@
                 </b-icon> 
                  {{ course.title }}</h4>
             <div class="columns">
-                <div class="column is-4">
-                    <p><small><b>Автор:</b> {{ course.created_by.first_name }} {{ course.created_by.last_name }}
+                <div class="column is-5">
+                    <p><small><b>Автор:</b> {{ course.created_by.last_name }} {{ course.created_by.first_name }}
                         {{ course.created_by.patronymic }}</small></p>
 
                     <p><small><b>Категории:</b> <span v-for="category in course.categories" :key="category.id">{{ category.title }}&nbsp </span> </small></p>
                 </div>
-                <div class="column is-offset-1 is-7">
+                <div class="column is-offset-1 is-6">
                     <template v-if="course.preview_description">
                         <small> {{ course.preview_description }}</small>
                     </template>

@@ -18,7 +18,7 @@ def existing_conversation_interlocutors(request):
     conversations = Conversation.objects.filter(
         users__in=list([request.user]))
     users = get_user_model().objects.filter(
-        conversations__in=conversations).distinct().exclude(id=request.user.id)
+        conversations__in=conversations).distinct().exclude(id=request.user.id).order_by('last_name', 'first_name', 'patronymic')
     serializer = ConversationUserSerializer(users, many=True)
     return Response(serializer.data)
 

@@ -12,7 +12,7 @@
                     </div>
                     <div class="column">
                         <p>
-                            <strong>{{ article.created_by.first_name }} {{ article.created_by.last_name }}
+                            <strong>{{ article.created_by.last_name }} {{ article.created_by.first_name }}
                                 {{ article.created_by.patronymic }}</strong>
                             <br />
                             <small>{{ article.created_at }}</small>
@@ -43,6 +43,14 @@
 a:hover {
     color: #e7cf6e;
 }
+
+
+/* Помещение изображений за всплывающим окном выбора даты */
+img {
+    z-index: -1;
+    position: relative;
+}
+
 </style>
 
 <script>

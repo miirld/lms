@@ -18,21 +18,25 @@ from courses.serializers import CourseListSerializer, CourseMenuSerializer
 
 from .serializers import *
 
+from courses.serializers import AssignCourseSerializer, CourseUserSerializer
+
 
 
 @api_view(['GET'])
 def get_active_course(request, id):
     course = Course.objects.get(id=id)
-    activities = Activity.objects.filter(participant=request.user, lesson__chapter__course__in=list([course]) )
-    lessons = Lesson.objects.filter (activities__in = activities).distinct()
-    chapters = Chapter.objects.filter(lessons__in = lessons).distinct().order_by('list_order')
+    activities = Activity.objects.filter(
+        participant=request.user, lesson__chapter__course__in=list([course]))
+    lessons = Lesson.objects.filter(activities__in=activities).distinct()
+    chapters = Chapter.objects.filter(
+        lessons__in=lessons).distinct().order_by('list_order')
     chapters_serializer = ChapterMenuSerializer(chapters, many=True)
     for chapter in chapters_serializer.data:
-        lessons_serializer = LessonMenuSerializer(lessons.filter(chapter=chapter['id']).order_by('list_order'), many=True)
+        lessons_serializer = LessonMenuSerializer(lessons.filter(
+            chapter=chapter['id']).order_by('list_order'), many=True)
         chapter['lessons'] = lessons_serializer.data
     print(chapters_serializer.data)
     course_serializer = CourseMenuSerializer(course)
-
 
     return Response({
         'course': course_serializer.data,
@@ -46,7 +50,8 @@ def get_activity_courses(request):
     courses = Course.objects.none()
     for activity in request.user.activities.all():
         if activity.lesson.chapter.course not in courses:
-            courses |= Course.objects.filter(id=activity.lesson.chapter.course.id)
+            courses |= Course.objects.filter(
+                id=activity.lesson.chapter.course.id)
     if category_id:
         courses = courses.filter(categories__in=[int(category_id)])
     courses = courses.order_by('-created_at')
@@ -54,6 +59,10 @@ def get_activity_courses(request):
     paginator.page_size = 3
     results = paginator.paginate_queryset(courses, request)
     serializer = CourseListSerializer(results, many=True)
+    for course in serializer.data:
+        author = get_user_model().objects.filter(created_activities__lesson__chapter__course__in=list(
+            [course['id']]), created_activities__participant__in=list([request.user.id])).distinct()
+        course['teacher'] = CourseUserSerializer(author[0], many=False).data
     return paginator.get_paginated_response(serializer.data)
 
 
@@ -85,8 +94,9 @@ def get_my_groups(request):
             for study_group in activity.participant.study_groups.all():
                 if study_group not in study_groups:
                     study_groups |= StudyGroup.objects.filter(
-                        id=study_group.id,is_active=True)
-
+                        id=study_group.id, is_active=True)
+                    
+        study_groups = study_groups.order_by('-grade', '-letter', 'school__short_name')
         paginator = CoursesPageNumberPagination()
         paginator.page_size = 3
         results = paginator.paginate_queryset(study_groups, request)
@@ -128,7 +138,8 @@ def get_my_group_progress(request, group_id):
         studygroup = StudyGroup.objects.get(id=group_id)
         for activity in request.user.created_activities.all():
             if activity.lesson.chapter.course not in courses and activity.participant in studygroup.members.all():
-                courses |= Course.objects.filter(id=activity.lesson.chapter.course.id)
+                courses |= Course.objects.filter(
+                    id=activity.lesson.chapter.course.id)
         print(courses)
         courses.order_by('-id')
         paginator = CoursesPageNumberPagination()
@@ -164,6 +175,19 @@ def get_data_for_activity(request):
         if len(request.user.study_groups.all()) == 0:
             study_groups = StudyGroup.objects.filter(is_active=True)
         study_groups_serializer = StudyGroupSerializer(study_groups, many=True)
+        for group in study_groups_serializer.data:
+            courses = Course.objects.none()
+            users = get_user_model().objects.filter(
+                study_groups__id__in=list([group['id']])).distinct()
+            study_groups = StudyGroup.objects.filter(id=group['id'])
+            courses1 = Course.objects.filter(created_for__in=study_groups, status=Chapter.PUBLISHED).exclude(
+                chapters__lessons__activities__participant__in=users).distinct()
+
+            courses2 = Course.objects.filter(created_for__in=study_groups, status=Chapter.PUBLISHED,
+                                             chapters__lessons__activities__created_by=request.user, chapters__lessons__activities__participant__in=users).distinct()
+
+            courses = courses1 | courses2
+            group['courses'] = AssignCourseSerializer(courses, many=True).data
         return Response(study_groups_serializer.data)
     else:
         return Response(status=status.HTTP_403_FORBIDDEN)
@@ -174,17 +198,17 @@ def assign_activity(request):
     if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
         study_group_id = request.data.get('study_group')
         course_id = request.data.get('course')
+        print(course_id)
         users = get_user_model().objects.filter(study_groups__in=(
             [study_group_id])).filter(role=get_user_model().STUDENT)
         course = Course.objects.get(id=course_id)
         lessons = Lesson.objects.filter(
-            chapter__course=course_id, status=Lesson.PUBLISHED)
+            chapter__course=course_id, status=Lesson.PUBLISHED, chapter__status=Chapter.PUBLISHED, chapter__course__status=Course.PUBLISHED)
 
         for lesson in lessons:
             for user in users:
                 Activity.objects.get_or_create(
                     lesson=lesson,
-                    status=Activity.STARTED,
                     created_by=request.user,
                     participant=user
                 )

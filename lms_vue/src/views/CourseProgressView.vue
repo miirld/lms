@@ -5,7 +5,7 @@
                 <div class="columns is-multiline">
                     <div class="column is-12">
                         <p class="is-size-4">
-                            Успеваемость группы {{ group.grade }}{{ group.letter }} {{ group.school.short_name }}
+                            Успеваемость класса «{{ group.grade }}{{ group.letter }} {{ group.school.short_name }}»
                         </p>
                     </div>
                     <template v-if="totalCourses !== 0">
@@ -29,7 +29,7 @@
                                     <div class="card-content">
                                         <div class="content">
                                             <div class="mb-3 box" v-for="member in course.members">
-                                                <p>{{ member.first_name }} {{ member.last_name }} {{
+                                                <p>{{ member.last_name }} {{ member.first_name }} {{
                                                     member.patronymic }}</p>
                                                 <template v-for="activity in member.activities">
                                                     <b-icon
@@ -88,8 +88,9 @@ export default {
         CoursesPagination
     },
     async mounted() {
+        
         const id = this.$route.params.id
-        this.loadFirstCourses()
+        
         this.isLoading = true
         await axios
             .get(`activities/group-progress/${id}/get-data/`)
@@ -100,7 +101,9 @@ export default {
             .catch(error => {
                 console.log(error)
             })
+        document.title = this.group.grade + this.group.letter + ' ' + this.group.school.short_name + ' | Роснефть класс'
         this.isLoading = false
+        this.loadFirstCourses()
     },
     methods: {
         loadFirstCourses() {
@@ -122,11 +125,12 @@ export default {
                 })
                 .then(response => {
                     console.log(response.data)
+                    this.totalCourses = response.data.count
                     this.isNextExists = false
                     this.isPreviousExists = false
                     this.courses = response.data.results
                     this.totalPages = response.data.total_pages
-                    this.totalCourses = response.data.count
+                    
                     if (response.data.previous) {
                         this.isPreviousExists = true
                     }

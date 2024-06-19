@@ -33,8 +33,7 @@ def get_news(request):
             dates[0], datetime.min.time()), timezone=timezone.get_current_timezone())
         dates[1] = timezone.make_aware(datetime.combine(
             dates[1], datetime.max.time()), timezone=timezone.get_current_timezone())
-        news = news.filter(created_at__range=(dates[0], dates[1])) | news.filter(
-            created_at__date=dates[0]) & news.filter(created_at__date=dates[1])
+        news = news.filter(created_at__range=(dates[0], dates[1]))
     news = news.order_by('-created_at')
 
     paginator = PageNumberPagination()

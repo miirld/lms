@@ -13,7 +13,7 @@
                             </div>
                             <div class="column">
                                 <p>
-                                    <strong>{{ user.first_name }} {{ user.last_name }} {{ user.patronymic }}</strong>
+                                    <strong>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</strong>
                                     <br />
                                     <small>{{ role }}</small>
                                 </p>

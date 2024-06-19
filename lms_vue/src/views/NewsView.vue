@@ -78,7 +78,7 @@ export default {
     },
 
     mounted() {
-        document.title = 'Главная страница | Роснефть класс'
+        document.title = 'Новости | Роснефть класс'
         this.loadFirstCourses()
         
     },
