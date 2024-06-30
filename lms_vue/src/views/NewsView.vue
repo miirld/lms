@@ -1,5 +1,5 @@
 <template>
-    <div class="home">
+    <div class="news">
         <section class="section">
             <div class="container">
                 <div class="columns">
@@ -53,7 +53,6 @@ import Trigger from '@/components/news/Trigger'
 import ArticleItem from '@/components/news/ArticleItem'
 import HomeMenu from '@/components/news/HomeMenu.vue'
 
-import { useRoute } from 'vue-router'
 
 
 export default {

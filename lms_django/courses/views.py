@@ -8,9 +8,9 @@ from .models import Course, Category, Lesson, Quiz, Chapter
 
 
 from .serializers import (CategorySerializer, CourseListSerializer,
-                          QuizSerializer, CourseMenuSerializer, ChapterMenuSerializer, LessonSerializer, AssignCourseSerializer)
+                          QuizSerializer, CourseSerializer, ChapterMenuSerializer, LessonSerializer)
 
-from study_groups.serializers import (StudyGroupSerializer)
+
 
 
 class CoursesPageNumberPagination(PageNumberPagination):
@@ -51,7 +51,7 @@ def get_categories(request):
 @api_view(['GET'])
 def get_course(request, id):
     course = Course.objects.get(id=id)
-    course_serializer = CourseMenuSerializer(course)
+    course_serializer = CourseSerializer(course)
     chapter_serializer = ChapterMenuSerializer(course.chapters.filter(status=Chapter.PUBLISHED).order_by('list_order'), many=True)
 
     return Response({

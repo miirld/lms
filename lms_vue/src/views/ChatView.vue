@@ -335,7 +335,7 @@ export default {
         },
 
         async submitForm() {
-            if (this.body && this.activeConversation.length !==0) {
+            if (this.body && this.activeInterluctor.length !==0) {
                 await axios
                     .post('/chat/send/', {
                         body: this.body,

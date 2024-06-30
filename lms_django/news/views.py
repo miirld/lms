@@ -1,18 +1,15 @@
-from django.shortcuts import render
+from datetime import datetime
 
-
-from rest_framework.response import Response
+from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
 
 from .models import News
-
 from .serializers import (NewsListSerializer,)
 
 
-from datetime import datetime
 
-from django.utils import timezone
+
 
 
 @api_view(['GET'])

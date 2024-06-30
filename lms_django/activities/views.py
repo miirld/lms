@@ -1,24 +1,26 @@
-from django.shortcuts import render
+from django.contrib.auth import get_user_model
+
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import status
 
 from study_groups.serializers import (StudyGroupSerializer)
 from study_groups.models import (StudyGroup)
 from courses.models import *
 
 from .models import (Activity)
-
-from django.contrib.auth import get_user_model
-
-from rest_framework import status
-
-from courses.views import CoursesPageNumberPagination
-from courses.serializers import CourseListSerializer, CourseMenuSerializer
-
 from .serializers import *
 
-from courses.serializers import AssignCourseSerializer, CourseUserSerializer
+
+
+
+from courses.views import CoursesPageNumberPagination
+from courses.serializers import CourseListSerializer, CourseSerializer
+
+
+from courses.serializers import AssignCourseSerializer
+from users.serializers import UserSerializer
 
 
 
@@ -36,7 +38,7 @@ def get_active_course(request, id):
             chapter=chapter['id']).order_by('list_order'), many=True)
         chapter['lessons'] = lessons_serializer.data
     print(chapters_serializer.data)
-    course_serializer = CourseMenuSerializer(course)
+    course_serializer = CourseSerializer(course)
 
     return Response({
         'course': course_serializer.data,
@@ -62,28 +64,10 @@ def get_activity_courses(request):
     for course in serializer.data:
         author = get_user_model().objects.filter(created_activities__lesson__chapter__course__in=list(
             [course['id']]), created_activities__participant__in=list([request.user.id])).distinct()
-        course['teacher'] = CourseUserSerializer(author[0], many=False).data
+        course['teacher'] = UserSerializer(author[0], many=False).data
     return paginator.get_paginated_response(serializer.data)
 
 
-# @api_view(['GET'])
-# def get_progress_courses(request):
-#     if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
-#         category_id = request.GET.get('category_id', '')
-#         courses = Course.objects.none()
-#         for activity in request.user.created_activities.all():
-#             if activity.course not in courses:
-#                 courses |= Course.objects.filter(id=activity.course.id)
-#         if category_id:
-#             courses = courses.filter(categories__in=[int(category_id)])
-#         courses = courses.order_by('-created_at')
-#         paginator = CoursesPageNumberPagination()
-#         paginator.page_size = 4
-#         results = paginator.paginate_queryset(courses, request)
-#         serializer = CourseListSerializer(results, many=True)
-#         return paginator.get_paginated_response(serializer.data)
-#     else:
-#         return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 @api_view(['GET'])
@@ -100,35 +84,13 @@ def get_my_groups(request):
         paginator = CoursesPageNumberPagination()
         paginator.page_size = 3
         results = paginator.paginate_queryset(study_groups, request)
-        serializer = ProgressStudyGroupSerializer(results, many=True)
+        serializer = StudyGroupSerializer(results, many=True)
         return paginator.get_paginated_response(serializer.data)
     else:
         return Response(status=status.HTTP_403_FORBIDDEN)
 
 
-# @api_view(['GET'])
-# def get_progress(request, course_id):
-#     if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
-#         study_groups = StudyGroup.objects.none()
-#         for activity in request.user.created_activities.all():
-#             for study_group in activity.participant.study_groups.all():
-#                 if study_group not in study_groups and activity.lesson.course.id == course_id:
-#                     study_groups |= StudyGroup.objects.filter(
-#                         id=study_group.id)
-#         paginator = CoursesPageNumberPagination()
-#         paginator.page_size = 5
-#         results = paginator.paginate_queryset(study_groups, request)
-#         serializer = ProgressStudyGroupSerializer(results, many=True)
-#         for study_group in serializer.data:
-#             for member in study_group['members']:
-#                 activities = Activity.objects.filter(participant__id=member['id'], course__id=course_id).order_by(
-#                     "lesson__chapter__list_order", "lesson__list_order", )
-#                 serializer_activities = ProgressActivitySerializer(
-#                     activities, many=True)
-#                 member['activities'] = serializer_activities.data
-#         return paginator.get_paginated_response(serializer.data)
-#     else:
-#         return Response(status=status.HTTP_403_FORBIDDEN)
+
 
 
 @api_view(['GET'])
@@ -147,8 +109,8 @@ def get_my_group_progress(request, group_id):
         results = paginator.paginate_queryset(courses, request)
         serializer_course = ProgressCourseSerializer(results, many=True)
         for course in serializer_course.data:
-            course['members'] = ProgressUserSerializer(get_user_model().objects.filter(
-                study_groups__in=[int(group_id)]), many=True).data
+            course['members'] = UserSerializer(get_user_model().objects.filter(
+                study_groups__in=[int(group_id)],role=get_user_model().STUDENT), many=True).data
             for member in course['members']:
                 activities = Activity.objects.filter(participant__id=member['id'], lesson__chapter__course__id=course['id']).order_by(
                     "lesson__chapter__list_order", "lesson__list_order", )
@@ -163,7 +125,7 @@ def get_my_group_progress(request, group_id):
 @api_view(['GET'])
 def get_group_name(request, group_id):
     group = StudyGroup.objects.get(id=group_id)
-    serializer = ProgressStudyGroupSerializer(group, many=False)
+    serializer = StudyGroupSerializer(group, many=False)
     return Response(serializer.data)
 
 
@@ -187,6 +149,7 @@ def get_data_for_activity(request):
                                              chapters__lessons__activities__created_by=request.user, chapters__lessons__activities__participant__in=users).distinct()
 
             courses = courses1 | courses2
+            courses = courses.filter(status=Course.PUBLISHED)
             group['courses'] = AssignCourseSerializer(courses, many=True).data
         return Response(study_groups_serializer.data)
     else:
@@ -217,13 +180,6 @@ def assign_activity(request):
         return Response(status=status.HTTP_403_FORBIDDEN)
 
 
-# @api_view(['POST'])
-# def get_students_activities(request):
-#     if request.user.role == get_user_model().TEACHER or request.user.role == get_user_model().TUTOR:
-
-#         return Response()
-#     else:
-#         return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 @api_view(['GET'])

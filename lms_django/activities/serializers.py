@@ -5,7 +5,6 @@ from .models import Activity
 from courses.models import Lesson, Chapter, Course
 from study_groups.models import StudyGroup, School
 
-from django.contrib.auth import get_user_model
 
 
 
@@ -28,38 +27,6 @@ class ActiveLessonSerializer(serializers.ModelSerializer):
         model = Activity
         fields = ('id', 'status')
 
-
-class ProgressSchoolSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = School
-        fields = ('id', 'short_name')
-
-
-class OnlyStudents(serializers.ListSerializer):
-    def to_representation(self, data):
-        data = data.filter(role=get_user_model().STUDENT)
-        return super(OnlyStudents, self).to_representation(data)
-
-class ProgressUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = get_user_model()
-        list_serializer_class=OnlyStudents
-        fields = ('id', 'first_name', 'last_name', 'patronymic')
-        
-
-# class ProgressStudyGroupSerializer(serializers.ModelSerializer):
-#     school = ProgressSchoolSerializer(many=False)
-#     members = ProgressUserSerializer(many=True)
-#     class Meta:
-#         model = StudyGroup
-#         fields = ('id', 'grade', 'letter', 'school', 'members')
-
-
-class ProgressStudyGroupSerializer(serializers.ModelSerializer):
-    school = ProgressSchoolSerializer(many=False)
-    class Meta:
-        model = StudyGroup
-        fields = ('id', 'grade', 'letter', 'school')
 
 class ChapterSerializer(serializers.ModelSerializer):
     class Meta:

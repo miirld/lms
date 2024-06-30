@@ -18,7 +18,7 @@ import axios from "axios";
 import TextClamp from "vue3-text-clamp";
 
 // axios.defaults.baseURL = "http://127.0.0.1:8000/api/v1";
-axios.defaults.baseURL = "http://192.168.97.55:8000/api/v1";
+axios.defaults.baseURL = "http://192.168.0.10:8000/api/v1";
 // axios.defaults.baseURL = "http://api.watch-this.site/api/v1";
 
 axios.interceptors.response.use(

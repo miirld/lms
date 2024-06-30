@@ -3,31 +3,26 @@ from django.contrib.auth import  authenticate
 
 from rest_framework import serializers
 
-from study_groups.models import StudyGroup, School
+from study_groups.serializers import StudyGroupSerializer
 
 
-
-class AccountSchoolSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = School
-        fields = ('id','full_name')
-
-class AccountConversationStudyGroupSerializer(serializers.ModelSerializer):
-    school = AccountSchoolSerializer(many=False)
-    class Meta:
-        model = StudyGroup
-        fields = ('id','grade', 'letter', 'school' )
+        model = get_user_model()
+        fields = ('id', 'first_name', 'last_name', 'patronymic','get_image')
 
 
-class AccountUserSerializer(serializers.ModelSerializer):
-    study_groups = AccountConversationStudyGroupSerializer(many=True)
+class ExtendedUserSerializer(serializers.ModelSerializer):
+    study_groups = StudyGroupSerializer(many=True)
     class Meta:
         model = get_user_model()
         fields = ('id', 'first_name', 'last_name', 'patronymic', 'get_image', 'role', 'study_groups')
 
 
-class UserSerializer(serializers.ModelSerializer):
-    '''serializer for the user object'''
+
+
+
+class AuthUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('username', 'password')
@@ -38,7 +33,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class AuthSerializer(serializers.Serializer):
-    '''serializer for the user authentication object'''
     username = serializers.CharField()
     password = serializers.CharField(
         style={'input_type': 'password'},

@@ -1,32 +1,28 @@
-# django imports
+from django.contrib.auth import get_user_model
 from django.contrib.auth import login
 
-# rest_framework imports
-from rest_framework import generics, authentication, permissions
-from rest_framework.settings import api_settings
+from rest_framework import generics, permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
-
-# knox imports
-from knox.views import LoginView as KnoxLoginView
-from knox.auth import TokenAuthentication
-
-# local apps import
-from .serializers import UserSerializer, AuthSerializer, AccountUserSerializer
-
-from rest_framework.authentication import SessionAuthentication
-
 from rest_framework.decorators import api_view
-
 from rest_framework.response import Response
 
-from django.contrib.auth import get_user_model
+from knox.views import LoginView as KnoxLoginView
+
+
+from .serializers import AuthUserSerializer, AuthSerializer, ExtendedUserSerializer
+
+
+
+
+
+
 
 
 
 @api_view(['GET'])
 def account (request):
     user = get_user_model().objects.get(id=request.user.id)
-    serializer = AccountUserSerializer(user, many=False)
+    serializer = ExtendedUserSerializer(user, many=False)
     return Response(serializer.data)
 
 
@@ -40,12 +36,10 @@ def me (request):
 
 
 class CreateUserView(generics.CreateAPIView):
-    # Create user API view
-    serializer_class = UserSerializer
+    serializer_class = AuthUserSerializer
 
 
 class LoginView(KnoxLoginView):
-    # login view extending KnoxLoginView
     serializer_class = AuthSerializer
     permission_classes = (permissions.AllowAny,)
 
@@ -58,10 +52,8 @@ class LoginView(KnoxLoginView):
 
 
 class ManageUserView(generics.RetrieveUpdateAPIView):
-    """Manage the authenticated user"""
-    serializer_class = UserSerializer
+    serializer_class = AuthUserSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_object(self):
-        """Retrieve and return authenticated user"""
         return self.request.user
